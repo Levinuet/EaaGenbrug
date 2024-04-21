@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "yK3KqgE7qPCJReGy9k93t/vD6IvcAsTm09WHdqSbx2BZ+UoG1tk8YGFBA8aNftzHEdqTVjmABGG3Ff6FqKJMMA==",
+  "success": true,
+  "projectFilePath": "/Users/rasmusolesen/RiderProjects/eaagenbru/ServerAPI/ServerAPI.csproj",
+  "expectedPackageFiles": [
+    "/Users/rasmusolesen/.nuget/packages/microsoft.netcore.app.ref/7.0.17/microsoft.netcore.app.ref.7.0.17.nupkg.sha512",
+    "/Users/rasmusolesen/.nuget/packages/microsoft.aspnetcore.app.ref/7.0.17/microsoft.aspnetcore.app.ref.7.0.17.nupkg.sha512",
+    "/Users/rasmusolesen/.nuget/packages/microsoft.netcore.app.host.osx-x64/7.0.17/microsoft.netcore.app.host.osx-x64.7.0.17.nupkg.sha512"
+  ],
+  "logs": []
+}
