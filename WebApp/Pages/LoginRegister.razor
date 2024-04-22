@@ -1,13 +1,11 @@
 ﻿@page "/loginregister"
-@using Microsoft.AspNetCore.Identity
+@using Core.Models;
+@using Microsoft.AspNetCore.Identity;
 @inject UserManager<IdentityUser> UserManager
 @inject SignInManager<IdentityUser> SignInManager
-@inject NavigationManager NavigationManager
-@using Microsoft.AspNetCore.Components.Forms
-using System.ComponentModel.DataAnnotations
-using System.Threading.Tasks
-
-
+@inject NavigationManager NavManager
+@inject HttpClient Http;
+@using Microsoft.AspNetCore.Components.Forms;
 
 <h3>Login or Opret Bruger</h3>
 
@@ -15,7 +13,7 @@ using System.Threading.Tasks
 {
     <EditForm Model="@_loginModel" OnValidSubmit="HandleLogin">
         <DataAnnotationsValidator />
-        <ValidationSummary />
+        <ValidationSummary/>
 
         <div class="form-group">
             <label>Email:</label>
@@ -58,7 +56,7 @@ else
         var result = await SignInManager.PasswordSignInAsync(_loginModel.Email, _loginModel.Password, false, false);
         if (result.Succeeded)
         {
-            NavigationManager.NavigateTo("/");
+            NavManager.NavigateTo("/");
         }
         else
         {
@@ -73,7 +71,7 @@ else
         if (result.Succeeded)
         {
             await SignInManager.SignInAsync(user, isPersistent: false);
-            NavigationManager.NavigateTo("/");
+            NavManager.NavigateTo("/");
         }
         else
         {
