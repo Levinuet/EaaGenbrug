@@ -1,6 +1,7 @@
 using Core.Model;
 using MongoDB.Driver;
 using System.Threading.Tasks;
+using static ServerAPI1.Program;
 
 namespace ServerAPI.Repositories
 {

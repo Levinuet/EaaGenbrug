@@ -3,6 +3,7 @@
 @using static Core.Model.User
 @inject HttpClient Http
 @inject NavigationManager NavigationManager;
+@inject IHttpClientFactory HttpClientFactory
 
 <h3>@(isRegistering ? "Register" : "Login")</h3>
 
@@ -56,14 +57,21 @@ else
     private User user = new User();
     private LoginModel loginModel = new LoginModel();
     private bool isRegistering = true;
+    private HttpClient httpClient;
+
+    protected override void OnInitialized()
+    {
+        httpClient = HttpClientFactory.CreateClient();
+    }
 
     private async Task HandleRegister()
     {
-        var response = await Http.PostAsJsonAsync("user/register", user);
+        var content = JsonContent.Create(user);
+        var response = await httpClient.PostAsync("https://localhost:7052/api/user/register", content);
         if (response.IsSuccessStatusCode)
         {
             // Navigate to user profile or other component
-            NavigationManager.NavigateTo("/myprofile");
+            NavigationManager.NavigateTo("/counter");
         }
         else
         {
@@ -73,11 +81,11 @@ else
 
     private async Task HandleLogin()
     {
-        var response = await Http.PostAsJsonAsync("user/login", loginModel);
+        var response = await Http.PostAsJsonAsync("/login", loginModel);
         if (response.IsSuccessStatusCode)
         {
             // Navigate to user profile or other component
-            NavigationManager.NavigateTo("/profile");
+            NavigationManager.NavigateTo("/counter");
         }
         else
         {

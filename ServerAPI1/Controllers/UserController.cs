@@ -1,12 +1,20 @@
 using Core.Model;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
+using Org.BouncyCastle.Crypto.Generators;
 using ServerAPI.Repositories;
+using static Core.Model.User;
+using static ServerAPI1.Program;
 
 [ApiController]
 [Route("[controller]")]
 public class UserController : ControllerBase
 {
     private readonly UserRepository _userRepository;
+    private readonly IMongoDatabase _database;
+
+    public IMongoCollection<User> Users => _database.GetCollection<User>("Users");
+
 
     public UserController(UserRepository userRepository)
     {
@@ -28,16 +36,24 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register(User user)
+    public async Task<IActionResult> Register(RegisterDto dto)
     {
-        if (await _userRepository.CheckUserExists(user.Username))
+        if (await _userRepository.CheckUserExists(dto.Username))
         {
             return BadRequest("User already exists");
         }
 
-        await _userRepository.CreateUser(user); // No password hashing
+        var user = new User
+        {
+            Username = dto.Username,
+            Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+            Email = dto.Email // if applicable
+        };
+
+        await _userRepository.CreateUser(user);
         return Ok("User registered successfully");
     }
+
 
     [HttpPost("login")]
     public async Task<IActionResult> Login(string username, string password)
@@ -49,5 +65,12 @@ public class UserController : ControllerBase
         }
 
         return Ok("User logged in successfully");
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Post(User user)
+    {
+        await _userRepository.CreateUser(user);
+        return CreatedAtAction(nameof(Post), new { id = user.Id }, user);
     }
 }
