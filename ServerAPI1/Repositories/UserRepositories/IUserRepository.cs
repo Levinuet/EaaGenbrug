@@ -9,6 +9,4 @@ public interface IUserRepository
         Task<IdentityResult> RegisterUserAsync(UserRegistrationDto userRegistration);
         Task<SignInResult> LoginUserAsync(UserLoginDto userLogin);
     }
-
-
 }
