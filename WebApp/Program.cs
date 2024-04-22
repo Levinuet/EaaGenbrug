@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using WebApp.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using System;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace WebApp
 {
@@ -10,10 +13,12 @@ namespace WebApp
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Register HttpClient for server-side usage
+            builder.Services.AddScoped<HttpClient>();
+
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
-            builder.Services.AddSingleton<WeatherForecastService>();
 
             var app = builder.Build();
 
@@ -24,16 +29,11 @@ namespace WebApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
             app.UseHttpsRedirection();
-
             app.UseStaticFiles();
-
             app.UseRouting();
-
             app.MapBlazorHub();
             app.MapFallbackToPage("/_Host");
-
             app.Run();
         }
     }
