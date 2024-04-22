@@ -15,4 +15,24 @@ namespace Core.Models
         [Required]
         public string Password { get; set; }
     }
+
+    public class UserRegistrationDto
+    {
+        [Required]
+        public string Email { get; set; }
+
+        [Required]
+        [StringLength(100, MinimumLength = 6)]
+        public string Password { get; set; }
+    }
+
+    public class UserLoginDto
+    {
+        [Required]
+        public string Email { get; set; }
+
+        [Required]
+        public string Password { get; set; }
+    }
+
 }

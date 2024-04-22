@@ -1,33 +1,54 @@
+using Core.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using ServerAPI.Repositories.UserRepositories;
 
 namespace ServerAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class UserController : ControllerBase
-    {
-        private static readonly string[] Summaries = new[]
+        [Route("[controller]")]
+        public class UserController : ControllerBase
         {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+            private readonly IUserRepository _userRepository;
+        
 
-        private readonly ILogger<UserController> _logger;
-
-        public UserController(ILogger<UserController> logger)
-        {
-            _logger = logger;
-        }
-
-        [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
-        {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+        public UserController(IUserRepository userRepository)
             {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+                _userRepository = userRepository;
+            }
+
+            [HttpPost("register")]
+            public async Task<IActionResult> Register([FromBody] UserRegistrationDto registration)
+            {
+                var result = await _userRepository.RegisterUserAsync(registration);
+
+                if (result.Succeeded)
+                {
+                    return Ok("User registered successfully.");
+                }
+                else
+                {
+                    return BadRequest(result.Errors);
+                }
+            }
+
+            [HttpPost("login")]
+            public async Task<IActionResult> Login([FromBody] UserLoginDto login)
+            {
+                var result = await _userRepository.LoginUserAsync(login);
+
+                if (result.Succeeded)
+                {
+                    return Ok("User logged in successfully.");
+                }
+                else if (result.IsLockedOut)
+                {
+                    return BadRequest("User account locked.");
+                }
+                else
+                {
+                    return BadRequest("Invalid login attempt.");
+                }
+            }
         }
-    }
 }
