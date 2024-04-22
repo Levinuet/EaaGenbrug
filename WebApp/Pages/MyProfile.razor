@@ -34,8 +34,7 @@
     </tbody>
 </table>
 
- <!--@if (user != null && user.Role.Name.Equals("Admin"))
- {-->
+
 <h2>Add Ad</h2>
 
 <EditForm EditContext="@aEditContext" class="row p-3" OnValidSubmit="@HandleValidSubmit">
@@ -65,7 +64,7 @@
         <button type="submit" class="btn btn-primary">Add</button>
     </div>
 </EditForm>
-}
+
 
 @code {
     private Ad ad = new Ad();
