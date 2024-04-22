@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "Nuv7giPDysybypq3XsHa1b5jf+puAh0ZuPbMNIev8Pd7X+OdYBhdbbi+zk4fq4qAGpu+89metBjg4iP5guXJ4w==",
+  "success": true,
+  "projectFilePath": "/Users/rasmusolesen/RiderProjects/eaagenbru/Core/Core.csproj",
+  "expectedPackageFiles": [
+    "/Users/rasmusolesen/.nuget/packages/microsoft.netcore.app.ref/7.0.17/microsoft.netcore.app.ref.7.0.17.nupkg.sha512",
+    "/Users/rasmusolesen/.nuget/packages/microsoft.aspnetcore.app.ref/7.0.17/microsoft.aspnetcore.app.ref.7.0.17.nupkg.sha512"
+  ],
+  "logs": []
+}
