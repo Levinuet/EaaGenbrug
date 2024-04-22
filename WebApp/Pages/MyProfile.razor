@@ -1,0 +1,69 @@
+@page "/myprofile"
+@using Core.Model
+@inject IAnnonceService AnnonceService
+
+<h3>Mine Annoncer</h3>
+
+@if (annoncer == null)
+{
+<p><em>Loading...</em></p>
+}
+else
+{
+<table class="table">
+    <thead>
+    <tr>
+        <th>Titel</th>
+        <th>Beskrivelse</th>
+        <th>Pris</th>
+        <th>Kategori</th>
+        <th>Lokation</th>
+        <th>Status</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var annonce in annoncer)
+    {
+    <tr>
+        <td>@annonce.Title</td>
+        <td>@annonce.Description</td>
+        <td>@annonce.Price.ToString("C")</td>
+        <td>@annonce.Category</td>
+        <td>@annonce.Location</td>
+        <td>@annonce.Status</td>
+        <td>
+            <button class="btn btn-primary" @onclick="() => EditAnnonce(annonce)">Rediger</button>
+            <button class="btn btn-danger" @onclick="() => DeleteAnnonce(annonce.Id)">Slet</button>
+        </td>
+    </tr>
+    }
+    </tbody>
+</table>
+<button class="btn btn-success" @onclick="CreateAnnonce">Tilføj Ny Annonce</button>
+}
+
+@code {
+private List<Annonce> annoncer;
+
+protected override async Task OnInitializedAsync()
+{
+annoncer = await AnnonceService.GetAnnoncerAsync();
+}
+
+private void CreateAnnonce()
+{
+NavigationManager.NavigateTo("/annonce/create");
+}
+
+private void EditAnnonce(Annonce annonce)
+{
+NavigationManager.NavigateTo($"/annonce/edit/{annonce.Id}");
+}
+
+private async Task DeleteAnnonce(int id)
+{
+await AnnonceService.DeleteAnnonceAsync(id);
+annoncer.RemoveAll(x => x.Id == id);
+}
+}
