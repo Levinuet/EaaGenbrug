@@ -1,4 +1,4 @@
-namespace ServerAPI1
+namespace ServerAPI
 {
     public class Program
     {
