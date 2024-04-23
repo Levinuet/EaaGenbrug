@@ -63,10 +63,10 @@ public class UserController : ControllerBase
 
     [HttpPost]
     [Route("login")]
-    public async Task<IActionResult> Login(string username, string password)
+    public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {
-        var user = await _userRepository.GetUserByUsername(username);
-        if (user == null || user.Password != password)
+        var user = await _userRepository.GetUserByUsername(loginDto.Username);
+        if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.Password))
         {
             return BadRequest("Invalid username or password");
         }
@@ -75,6 +75,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
+    [Route("create")]
     public async Task<IActionResult> Post(User user)
     {
         await _userRepository.CreateUser(user);

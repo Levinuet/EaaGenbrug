@@ -1,5 +1,6 @@
 @page "/login"
 @using Core.Model
+@using System.Text.Json
 @using static Core.Model.User
 @inject HttpClient Http
 @inject NavigationManager NavigationManager;
@@ -50,7 +51,7 @@ else
         </div>
 
         <button type="submit" class="btn btn-primary">Login</button>
-        <button type="button" class="btn btn-secondary" @onclick="ToggleForm">Er du ikke oprettet?Skift til opret bruger</button>
+        <button type="button" class="btn btn-secondary" @onclick="ToggleForm">Er du ikke oprettet? Opret bruger</button>
     </EditForm>
 }
 
@@ -71,11 +72,11 @@ else
     private async Task HandleRegister()
     {
         var registerDto = new RegisterDto { Username = user.Username, Password = user.Password, Email = user.Email };
-        var response = await Http.PostAsJsonAsync("https://localhost:7189/user/register", registerDto);
+        var response = await http.PostAsJsonAsync("https://localhost:7189/user/register", registerDto);
 
         if (response.IsSuccessStatusCode)
         {
-            NavigationManager.NavigateTo("/counter");  // Adjust according to your routing
+            NavigationManager.NavigateTo("/myprofile");  // Adjust according to your routing
         }
         else
         {
@@ -88,17 +89,21 @@ else
 
     private async Task HandleLogin()
     {
-        var response = await Http.PostAsJsonAsync("https://localhost:7189/user/login", loginModel);
+        Console.WriteLine($"Sending login data: {JsonSerializer.Serialize(loginModel)}");
+        var response = await http.PostAsJsonAsync("https://localhost:7189/user/login", loginModel);
         if (response.IsSuccessStatusCode)
         {
-            // Navigate to user profile or other component
-            NavigationManager.NavigateTo("/counter");
+            NavigationManager.NavigateTo("/myprofile");
         }
         else
         {
-            // Handle errors, display an error message, etc.
+            var errorResponse = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"Login failed: {errorResponse}");
+            // Consider displaying this error message on the UI
         }
     }
+
+
 
     private void ToggleForm()
     {
