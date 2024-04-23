@@ -1,116 +1,29 @@
 @page "/myprofile"
-@using Core.Model;
-@inject HttpClient Http
-@inject Blazored.LocalStorage.ILocalStorageService localStore
-@inject NavigationManager navigationManager
+@inject NavigationManager NavigationManager
 
-<h1 class="mb-3 mt-3">My Ads</h1>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Price</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var ad in ads ?? new Ad[0])
-        {
-            <tr>
-                <td>@ad.Title</td>
-                <td>@ad.Description</td>
-                <td>@ad.Price</td>
-                <td>
-                    <InputSelect @bind-Value="ad.Status" class="form-control">
-                        <option value="Active">Active</option>
-                        <option value="Reserved">Reserved</option>
-                        <option value="Inactive">Inactive</option>
-                    </InputSelect>
-                </td>
+<h3>My Profile</h3>
 
-            </tr>
-        }
-    </tbody>
-</table>
-
-
-<h2>Add Ad</h2>
-
-<EditForm EditContext="@aEditContext" class="row p-3" OnValidSubmit="@HandleValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <div class="col-md-12 mb-3">
-        <label for="Title">Title</label>
-        <InputText id="Title" @bind-Value="ad.Title" class="form-control" />
-    </div>
-    <div class="col-md-6 mb-3">
-        <label for="Price">Price</label>
-        <InputNumber id="Price" @bind-Value="ad.Price" class="form-control" />
-    </div>
-    <div class="col-md-6 mb-3">
-        <label for="Status">Status</label>
-        <InputSelect @bind-Value="ad.Status" class="form-control">
-            <option value="Active">Active</option>
-            <option value="Reserved">Reserved</option>
-            <option value="Inactive">Inactive</option>
-        </InputSelect>
-    </div>
-    <div class="col-md-12 mb-3">
-        <label for="Description">Description</label>
-        <InputTextArea id="Description" @bind-Value="ad.Description" class="form-control" />
-    </div>
-    <div class="col-12 mb-3">
-        <button type="submit" class="btn btn-primary">Add</button>
-    </div>
-</EditForm>
-
+@if (isLoggedIn)
+{
+    <p>Welcome to your profile page!</p>
+    <p>This page is accessible because you are logged in.</p>
+    <p>Username: @username</p>
+}
+else
+{
+    <p>You are not logged in. Please <a href="/login">click here to log in</a>.</p>
+}
 
 @code {
-    private Ad ad = new Ad();
-    private Ad[]? ads = new Ad[0];
-    private EditContext? aEditContext;
+    private bool isLoggedIn = false;
+    private string username = "Default User";
 
-    private string serverUrl = "https://localhost:7060";
-   // private User? user;
-
-   /*protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        aEditContext = new EditContext(ad);
-
-        user = await localStore.GetItemAsync<User>("currentUser");
-        if (user is null)
-        {
-            await localStore.SetItemAsStringAsync("target", "myprofile");
-            navigationManager.NavigateTo("login");
-        }
-
-        ads = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/ads/getall");
-    }*/
-
-    public async Task HandleValidSubmit()
-    {
-        await AddAd();
-    }
-
-    private async Task AddAd()
-    {
-        await Http.PostAsJsonAsync<Ad>($"{serverUrl}/api/ads/add", ad);
-        Console.WriteLine("Client: add " + ad.Title + " " + ad.Price);
-        ads = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/ads/getall");
-        ad = new(); // clear fields in form
-    }
-
-    private async Task DeleteAd(Ad ad)
-    {
-        await Http.DeleteAsync($"{serverUrl}/api/ads/delete/{ad.Id}");
-        ads = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/ads/getall");
-    }
-
-    private async Task UpdateAd(Ad ad)
-    {
-        
-        await Http.PutAsJsonAsync<Ad>($"{serverUrl}/api/ads/update", ad);
-        ads = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/ads/getall");
+        // Here, you would check if the user is logged in and set the username accordingly
+        // This is a placeholder logic
+        // You should replace this with actual authentication check
+        isLoggedIn = true; // Set this based on actual login status
+        username = "User123"; // Set this to the logged-in user's username
     }
 }
