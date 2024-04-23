@@ -1,0 +1,107 @@
+@page "/login"
+@using Core.Model
+@using static Core.Model.User
+@inject HttpClient Http
+@inject NavigationManager NavigationManager;
+@inject IHttpClientFactory HttpClientFactory
+
+
+<h3>@(isRegistering ? "Register" : "Login")</h3>
+
+@if (isRegistering)
+{
+    <EditForm Model="@user" OnValidSubmit="HandleRegister">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <InputText id="username" class="form-control" @bind-Value="user.Username" />
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <InputText id="email" class="form-control" @bind-Value="user.Email" />
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <InputText id="password" type="password" class="form-control" @bind-Value="user.Password" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Opret Bruger</button>
+        <button type="button" class="btn btn-secondary" @onclick="ToggleForm">Allerede oprettet? Log in her</button>
+    </EditForm>
+}
+else
+{
+    <EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-group">
+            <label for="username">Brugernavn:</label>
+            <InputText id="username" class="form-control" @bind-Value="loginModel.Username" />
+        </div>
+
+        <div class="form-group">
+            <label for="password">Kodeord:</label>
+            <InputText id="password" type="password" class="form-control" @bind-Value="loginModel.Password" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Login</button>
+        <button type="button" class="btn btn-secondary" @onclick="ToggleForm">Er du ikke oprettet?Skift til opret bruger</button>
+    </EditForm>
+}
+
+
+@code {
+    private User user = new User();
+    private LoginModel loginModel = new LoginModel();
+    private bool isRegistering = true;
+    private HttpClient httpClient;
+
+    private HttpClient http;
+
+    protected override void OnInitialized()
+    {
+        http = HttpClientFactory.CreateClient("MyClient");
+    }
+
+    private async Task HandleRegister()
+    {
+        var registerDto = new RegisterDto { Username = user.Username, Password = user.Password, Email = user.Email };
+        var response = await Http.PostAsJsonAsync("https://localhost:7189/user/register", registerDto);
+
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo("/counter");  // Adjust according to your routing
+        }
+        else
+        {
+            var errorResponse = await response.Content.ReadAsStringAsync();
+            // Display errorResponse in the UI
+        }
+    }
+
+
+
+    private async Task HandleLogin()
+    {
+        var response = await Http.PostAsJsonAsync("https://localhost:7189/user/login", loginModel);
+        if (response.IsSuccessStatusCode)
+        {
+            // Navigate to user profile or other component
+            NavigationManager.NavigateTo("/counter");
+        }
+        else
+        {
+            // Handle errors, display an error message, etc.
+        }
+    }
+
+    private void ToggleForm()
+    {
+        isRegistering = !isRegistering;
+    }
+}
