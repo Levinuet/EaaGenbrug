@@ -1,0 +1,80 @@
+﻿@page "/loginregister"
+@using Core.Models;
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<IdentityUser> SignInManager
+@inject NavigationManager NavManager
+@inject HttpClient Http;
+
+<h3>Login or Opret Bruger</h3>
+
+@if (_showLogin)
+{
+    <EditForm Model="@_loginModel" OnValidSubmit="HandleLogin">
+        <DataAnnotationsValidator />
+        <ValidationSummary/>
+
+        <div class="form-group">
+            <label>Email:</label>
+            <InputText @bind-Value="_loginModel.Email" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label>Password:</label>
+            <InputText @bind-Value="_loginModel.Password" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </EditForm>
+    <button class="btn btn-secondary" @onclick="() => _showLogin = false">Register</button>
+}
+else
+{
+    <EditForm Model="@_registerModel" OnValidSubmit="HandleRegister">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-group">
+            <label>Email:</label>
+            <InputText @bind-Value="_registerModel.Email" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label>Password:</label>
+            <InputText @bind-Value="_registerModel.Password" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+    </EditForm>
+    <button class="btn btn-secondary" @onclick="() => _showLogin = true">Login</button>
+}
+
+@code {
+    private bool _showLogin = true; // To toggle between login and register
+    private LoginModel _loginModel = new LoginModel();
+    private User _registerModel = new Core.Models.User();
+
+    private async Task HandleLogin()
+    {
+        var result = await SignInManager.PasswordSignInAsync(_loginModel.Email, _loginModel.Password, false, false);
+        if (result.Succeeded)
+        {
+            NavManager.NavigateTo("/");
+        }
+        else
+        {
+            // Handle failed login
+        }
+    }
+
+    private async Task HandleRegister()
+    {
+        var user = new IdentityUser { UserName = _registerModel.Email, Email = _registerModel.Email };
+        var result = await UserManager.CreateAsync(user, _registerModel.Password);
+        if (result.Succeeded)
+        {
+            await SignInManager.SignInAsync(user, isPersistent: false);
+            NavManager.NavigateTo("/");
+        }
+        else
+        {
+            // Handle registration failure
+        }
+    }
+}

@@ -2,6 +2,7 @@ using MongoDB.Driver;
 using ServerAPI.Repositories;
 
 namespace ServerAPI1
+
 {
     public class Program
     {
@@ -27,7 +28,6 @@ namespace ServerAPI1
             app.UseAuthorization();
             app.MapControllers();
             app.MapBlazorHub();
-
             app.Run();
 
         }
