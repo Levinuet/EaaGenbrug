@@ -1,10 +1,11 @@
+using MongoDB.Bson;
 using System.ComponentModel.DataAnnotations;
 
 namespace Core.Model;
 
 public class User
 {
-    public int Id { get; set; }
+    public ObjectId Id { get; set; }
     [Required]
     [StringLength(100)]
     public string Username { get; set; }
