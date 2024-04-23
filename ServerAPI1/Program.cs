@@ -1,6 +1,7 @@
 using MongoDB.Driver;
 using ServerAPI.Repositories;
 
+
 namespace ServerAPI1
 
 {
@@ -9,6 +10,11 @@ namespace ServerAPI1
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+           builder.Services.AddHttpClient("MyClient", client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:7052/");
+            });
 
 
             // Add services to the container.
@@ -19,7 +25,6 @@ namespace ServerAPI1
             builder.Services.AddScoped<UserRepository>();
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
-            builder.Services.AddSingleton<HttpClient>();
 
             builder.Services.AddControllers();
             var app = builder.Build();

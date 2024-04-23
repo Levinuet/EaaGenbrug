@@ -20,6 +20,12 @@ public class Program
             // Register HttpClient for server-side usage
             builder.Services.AddScoped<HttpClient>();
 
+            builder.Services.AddHttpClient("MyClient", client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:7052/");
+            });
+
+
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
