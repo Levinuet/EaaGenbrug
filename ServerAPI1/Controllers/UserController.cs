@@ -21,7 +21,8 @@ public class UserController : ControllerBase
         _userRepository = userRepository;
     }
 
-    [HttpGet("getall")]
+    [HttpGet]
+    [Route("getall")]
     public async Task<IActionResult> GetAllUsers()
     {
         try
@@ -35,7 +36,8 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpPost("register")]
+    [HttpPost]
+    [Route("register")]
     public async Task<IActionResult> Register(RegisterDto dto)
     {
         if (await _userRepository.CheckUserExists(dto.Username))
@@ -47,15 +49,20 @@ public class UserController : ControllerBase
         {
             Username = dto.Username,
             Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-            Email = dto.Email // if applicable
+            Email = dto.Email
         };
 
         await _userRepository.CreateUser(user);
         return Ok("User registered successfully");
+
+
     }
 
 
-    [HttpPost("login")]
+
+
+    [HttpPost]
+    [Route("login")]
     public async Task<IActionResult> Login(string username, string password)
     {
         var user = await _userRepository.GetUserByUsername(username);

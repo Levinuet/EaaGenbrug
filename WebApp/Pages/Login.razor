@@ -5,6 +5,7 @@
 @inject NavigationManager NavigationManager;
 @inject IHttpClientFactory HttpClientFactory
 
+
 <h3>@(isRegistering ? "Register" : "Login")</h3>
 
 @if (isRegistering)
@@ -28,8 +29,8 @@
             <InputText id="password" type="password" class="form-control" @bind-Value="user.Password" />
         </div>
 
-        <button type="submit" class="btn btn-primary">Register</button>
-        <button type="button" class="btn btn-secondary" @onclick="ToggleForm">Switch to Login</button>
+        <button type="submit" class="btn btn-primary">Opret Bruger</button>
+        <button type="button" class="btn btn-secondary" @onclick="ToggleForm">Allerede oprettet? Log in her</button>
     </EditForm>
 }
 else
@@ -39,19 +40,20 @@ else
         <ValidationSummary />
 
         <div class="form-group">
-            <label for="username">Username:</label>
+            <label for="username">Brugernavn:</label>
             <InputText id="username" class="form-control" @bind-Value="loginModel.Username" />
         </div>
 
         <div class="form-group">
-            <label for="password">Password:</label>
+            <label for="password">Kodeord:</label>
             <InputText id="password" type="password" class="form-control" @bind-Value="loginModel.Password" />
         </div>
 
         <button type="submit" class="btn btn-primary">Login</button>
-        <button type="button" class="btn btn-secondary" @onclick="ToggleForm">Switch to Register</button>
+        <button type="button" class="btn btn-secondary" @onclick="ToggleForm">Er du ikke oprettet?Skift til opret bruger</button>
     </EditForm>
 }
+
 
 @code {
     private User user = new User();
@@ -59,29 +61,34 @@ else
     private bool isRegistering = true;
     private HttpClient httpClient;
 
+    private HttpClient http;
+
     protected override void OnInitialized()
     {
-        httpClient = HttpClientFactory.CreateClient();
+        http = HttpClientFactory.CreateClient("MyClient");
     }
 
     private async Task HandleRegister()
     {
-        var content = JsonContent.Create(user);
-        var response = await httpClient.PostAsync("https://localhost:7052/api/user/register", content);
+        var registerDto = new RegisterDto { Username = user.Username, Password = user.Password, Email = user.Email };
+        var response = await Http.PostAsJsonAsync("https://localhost:7189/user/register", registerDto);
+
         if (response.IsSuccessStatusCode)
         {
-            // Navigate to user profile or other component
-            NavigationManager.NavigateTo("/counter");
+            NavigationManager.NavigateTo("/counter");  // Adjust according to your routing
         }
         else
         {
-            // Handle errors, display an error message, etc.
+            var errorResponse = await response.Content.ReadAsStringAsync();
+            // Display errorResponse in the UI
         }
     }
 
+
+
     private async Task HandleLogin()
     {
-        var response = await Http.PostAsJsonAsync("/login", loginModel);
+        var response = await Http.PostAsJsonAsync("https://localhost:7189/user/login", loginModel);
         if (response.IsSuccessStatusCode)
         {
             // Navigate to user profile or other component
