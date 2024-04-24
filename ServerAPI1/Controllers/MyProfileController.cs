@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Core.Model;
-using ServerAPI.Repositories;
 
 namespace HelloBlazor.Server.Controllers
 {
