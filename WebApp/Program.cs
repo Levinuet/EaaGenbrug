@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components.Web;
 using WebApp.Data;
 
 
-//Hej Levi
+
 namespace WebApp
 {
     public class Program

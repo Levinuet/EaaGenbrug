@@ -1,32 +1,26 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\WebApp\\WebApp.csproj": {}
+    "/Users/rasmusolesen/RiderProjects/EaaGenbrugse/WebApp/WebApp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\Core\\Core.csproj": {
+    "/Users/rasmusolesen/RiderProjects/EaaGenbrugse/Core/Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\Core\\Core.csproj",
+        "projectUniqueName": "/Users/rasmusolesen/RiderProjects/EaaGenbrugse/Core/Core.csproj",
         "projectName": "Core",
-        "projectPath": "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\Core\\Core.csproj",
-        "packagesPath": "C:\\Users\\m78694\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\Core\\obj\\",
+        "projectPath": "/Users/rasmusolesen/RiderProjects/EaaGenbrugse/Core/Core.csproj",
+        "packagesPath": "/Users/rasmusolesen/.nuget/packages/",
+        "outputPath": "/Users/rasmusolesen/RiderProjects/EaaGenbrugse/Core/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\m78694\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/rasmusolesen/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
+          "/usr/local/share/dotnet/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -39,11 +33,6 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -78,46 +67,50 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[7.0.17, 7.0.17]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[7.0.17, 7.0.17]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.203/RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\WebApp\\WebApp.csproj": {
+    "/Users/rasmusolesen/RiderProjects/EaaGenbrugse/ServerAPI/ServerAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\WebApp\\WebApp.csproj",
-        "projectName": "WebApp",
-        "projectPath": "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\WebApp\\WebApp.csproj",
-        "packagesPath": "C:\\Users\\m78694\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\WebApp\\obj\\",
+        "projectUniqueName": "/Users/rasmusolesen/RiderProjects/EaaGenbrugse/ServerAPI/ServerAPI.csproj",
+        "projectName": "ServerAPI",
+        "projectPath": "/Users/rasmusolesen/RiderProjects/EaaGenbrugse/ServerAPI/ServerAPI.csproj",
+        "packagesPath": "/Users/rasmusolesen/.nuget/packages/",
+        "outputPath": "/Users/rasmusolesen/RiderProjects/EaaGenbrugse/ServerAPI/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\m78694\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/rasmusolesen/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
+          "/usr/local/share/dotnet/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\Core\\Core.csproj": {
-                "projectPath": "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\Core\\Core.csproj"
+              "/Users/rasmusolesen/RiderProjects/EaaGenbrugse/Core/Core.csproj": {
+                "projectPath": "/Users/rasmusolesen/RiderProjects/EaaGenbrugse/Core/Core.csproj"
               }
             }
           }
@@ -126,11 +119,106 @@
           "warnAsError": [
             "NU1605"
           ]
+        }
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "dependencies": {
+            "BCrypt.Net-Next": {
+              "target": "Package",
+              "version": "[4.0.3, )"
+            },
+            "Blazored.LocalStorage": {
+              "target": "Package",
+              "version": "[4.5.0, )"
+            },
+            "MongoDB.Bson": {
+              "target": "Package",
+              "version": "[2.25.0, )"
+            },
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[2.25.0, )"
+            },
+            "Portable.BouncyCastle": {
+              "target": "Package",
+              "version": "[1.9.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[7.0.17, 7.0.17]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.osx-x64",
+              "version": "[7.0.17, 7.0.17]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[7.0.17, 7.0.17]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.203/RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/rasmusolesen/RiderProjects/EaaGenbrugse/WebApp/WebApp.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/rasmusolesen/RiderProjects/EaaGenbrugse/WebApp/WebApp.csproj",
+        "projectName": "WebApp",
+        "projectPath": "/Users/rasmusolesen/RiderProjects/EaaGenbrugse/WebApp/WebApp.csproj",
+        "packagesPath": "/Users/rasmusolesen/.nuget/packages/",
+        "outputPath": "/Users/rasmusolesen/RiderProjects/EaaGenbrugse/WebApp/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/rasmusolesen/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net7.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
         },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
+        "frameworks": {
+          "net7.0": {
+            "targetAlias": "net7.0",
+            "projectReferences": {
+              "/Users/rasmusolesen/RiderProjects/EaaGenbrugse/Core/Core.csproj": {
+                "projectPath": "/Users/rasmusolesen/RiderProjects/EaaGenbrugse/Core/Core.csproj"
+              },
+              "/Users/rasmusolesen/RiderProjects/EaaGenbrugse/ServerAPI/ServerAPI.csproj": {
+                "projectPath": "/Users/rasmusolesen/RiderProjects/EaaGenbrugse/ServerAPI/ServerAPI.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
         }
       },
       "frameworks": {
@@ -165,6 +253,20 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[7.0.17, 7.0.17]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.osx-x64",
+              "version": "[7.0.17, 7.0.17]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[7.0.17, 7.0.17]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -173,7 +275,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.203/RuntimeIdentifierGraph.json"
         }
       }
     }

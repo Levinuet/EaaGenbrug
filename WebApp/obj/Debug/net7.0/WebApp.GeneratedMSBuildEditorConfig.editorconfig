@@ -9,55 +9,55 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = WebApp
 build_property.RootNamespace = WebApp
-build_property.ProjectDir = C:\Users\m78694\Desktop\IT-Ak\2.Semester\EaaGenbrug\WebApp\
+build_property.ProjectDir = /Users/rasmusolesen/RiderProjects/EaaGenbrugse/WebApp/
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 7.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\m78694\Desktop\IT-Ak\2.Semester\EaaGenbrug\WebApp
+build_property.MSBuildProjectDirectory = /Users/rasmusolesen/RiderProjects/EaaGenbrugse/WebApp
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Users/m78694/Desktop/IT-Ak/2.Semester/EaaGenbrug/WebApp/App.razor]
+[/Users/rasmusolesen/RiderProjects/EaaGenbrugse/WebApp/App.razor]
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/m78694/Desktop/IT-Ak/2.Semester/EaaGenbrug/WebApp/Pages/CreateAds.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3JlYXRlQWRzLnJhem9y
+[/Users/rasmusolesen/RiderProjects/EaaGenbrugse/WebApp/Pages/CreateAds.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ3JlYXRlQWRzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/m78694/Desktop/IT-Ak/2.Semester/EaaGenbrug/WebApp/Pages/Index.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
+[/Users/rasmusolesen/RiderProjects/EaaGenbrugse/WebApp/Pages/Login.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTG9naW4ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/m78694/Desktop/IT-Ak/2.Semester/EaaGenbrug/WebApp/Pages/Login.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9naW4ucmF6b3I=
+[/Users/rasmusolesen/RiderProjects/EaaGenbrugse/WebApp/Pages/MyProfile.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTXlQcm9maWxlLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/m78694/Desktop/IT-Ak/2.Semester/EaaGenbrug/WebApp/Pages/MyProfile.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTXlQcm9maWxlLnJhem9y
+[/Users/rasmusolesen/RiderProjects/EaaGenbrugse/WebApp/Shared/SurveyPrompt.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL1N1cnZleVByb21wdC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/m78694/Desktop/IT-Ak/2.Semester/EaaGenbrug/WebApp/Shared/SurveyPrompt.razor]
-build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFN1cnZleVByb21wdC5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/m78694/Desktop/IT-Ak/2.Semester/EaaGenbrug/WebApp/_Imports.razor]
+[/Users/rasmusolesen/RiderProjects/EaaGenbrugse/WebApp/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/m78694/Desktop/IT-Ak/2.Semester/EaaGenbrug/WebApp/Shared/MainLayout.razor]
-build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
-build_metadata.AdditionalFiles.CssScope = b-snfefjgk3b
+[/Users/rasmusolesen/RiderProjects/EaaGenbrugse/WebApp/Pages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvSW5kZXgucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-cwl3cz7yo1
 
-[C:/Users/m78694/Desktop/IT-Ak/2.Semester/EaaGenbrug/WebApp/Shared/NavMenu.razor]
-build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE5hdk1lbnUucmF6b3I=
-build_metadata.AdditionalFiles.CssScope = b-c2wpa7m53j
+[/Users/rasmusolesen/RiderProjects/EaaGenbrugse/WebApp/Shared/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL01haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-iymxgj1jkn
 
-[C:/Users/m78694/Desktop/IT-Ak/2.Semester/EaaGenbrug/WebApp/Pages/Error.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3IuY3NodG1s
+[/Users/rasmusolesen/RiderProjects/EaaGenbrugse/WebApp/Shared/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL05hdk1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-0rpgcxawqx
+
+[/Users/rasmusolesen/RiderProjects/EaaGenbrugse/WebApp/Pages/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRXJyb3IuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/m78694/Desktop/IT-Ak/2.Semester/EaaGenbrug/WebApp/Pages/_Host.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX0hvc3QuY3NodG1s
+[/Users/rasmusolesen/RiderProjects/EaaGenbrugse/WebApp/Pages/_Host.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvX0hvc3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 

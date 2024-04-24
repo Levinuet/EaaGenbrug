@@ -1,0 +1,42 @@
+.ads-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.card {
+    width: 250px; /* Fixed width for each card */
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Adds shadow for depth */
+    border-radius: 5px; /* Rounded corners for the cards */
+    overflow: hidden; /* Ensures no content overflows */
+    background-color: #fff; /* White background */
+    text-align: center; /* Centers the text */
+}
+
+.card-title {
+    color: #333;
+    font-size: 16px;
+    padding: 10px;
+    background-color: #f7f7f7; /* Light grey background for the title */
+}
+
+.card-img {
+    width: 100%; /* Ensures the image covers the card width */
+    height: 150px; /* Fixed height for images */
+    object-fit: cover; /* Ensures the image covers the area without distortion */
+}
+
+.card-info {
+    padding: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.loading, .no-ads {
+    text-align: center;
+    width: 100%;
+    padding: 20px;
+    font-size: 18px;
+}
+
