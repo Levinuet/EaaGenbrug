@@ -387,6 +387,19 @@
           }
         }
       },
+      "Portable.BouncyCastle/1.9.0": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/BouncyCastle.Crypto.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/BouncyCastle.Crypto.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "SharpCompress/0.30.1": {
         "type": "package",
         "compile": {
@@ -1098,6 +1111,21 @@
         "runtimes/win/native/mongocrypt.dll"
       ]
     },
+    "Portable.BouncyCastle/1.9.0": {
+      "sha512": "eZZBCABzVOek+id9Xy04HhmgykF0wZg9wpByzrWN7q8qEI0Qen9b7tfd7w8VA3dOeesumMG7C5ZPy0jk7PSRHw==",
+      "type": "package",
+      "path": "portable.bouncycastle/1.9.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net40/BouncyCastle.Crypto.dll",
+        "lib/net40/BouncyCastle.Crypto.xml",
+        "lib/netstandard2.0/BouncyCastle.Crypto.dll",
+        "lib/netstandard2.0/BouncyCastle.Crypto.xml",
+        "portable.bouncycastle.1.9.0.nupkg.sha512",
+        "portable.bouncycastle.nuspec"
+      ]
+    },
     "SharpCompress/0.30.1": {
       "sha512": "XqD4TpfyYGa7QTPzaGlMVbcecKnXy4YmYLDWrU+JIj7IuRNl7DH2END+Ll7ekWIY8o3dAMWLFDE1xdhfIWD1nw==",
       "type": "package",
@@ -1379,7 +1407,8 @@
       "Blazored.LocalStorage >= 4.5.0",
       "Core >= 1.0.0",
       "MongoDB.Bson >= 2.25.0",
-      "MongoDB.Driver >= 2.25.0"
+      "MongoDB.Driver >= 2.25.0",
+      "Portable.BouncyCastle >= 1.9.0"
     ]
   },
   "packageFolders": {
@@ -1389,11 +1418,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\WebApp\\WebApp.csproj",
-      "projectName": "WebApp",
-      "projectPath": "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\WebApp\\WebApp.csproj",
+      "projectUniqueName": "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\ServerAPI\\ServerAPI.csproj",
+      "projectName": "ServerAPI",
+      "projectPath": "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\ServerAPI\\ServerAPI.csproj",
       "packagesPath": "C:\\Users\\m78694\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\WebApp\\obj\\",
+      "outputPath": "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\ServerAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -1451,6 +1480,10 @@
           "MongoDB.Driver": {
             "target": "Package",
             "version": "[2.25.0, )"
+          },
+          "Portable.BouncyCastle": {
+            "target": "Package",
+            "version": "[1.9.0, )"
           }
         },
         "imports": [

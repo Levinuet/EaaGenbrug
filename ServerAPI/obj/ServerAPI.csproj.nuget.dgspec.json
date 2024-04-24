@@ -1,7 +1,7 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\WebApp\\WebApp.csproj": {}
+    "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\ServerAPI\\ServerAPI.csproj": {}
   },
   "projects": {
     "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\Core\\Core.csproj": {
@@ -87,14 +87,14 @@
         }
       }
     },
-    "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\WebApp\\WebApp.csproj": {
+    "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\ServerAPI\\ServerAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\WebApp\\WebApp.csproj",
-        "projectName": "WebApp",
-        "projectPath": "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\WebApp\\WebApp.csproj",
+        "projectUniqueName": "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\ServerAPI\\ServerAPI.csproj",
+        "projectName": "ServerAPI",
+        "projectPath": "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\ServerAPI\\ServerAPI.csproj",
         "packagesPath": "C:\\Users\\m78694\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\WebApp\\obj\\",
+        "outputPath": "C:\\Users\\m78694\\Desktop\\IT-Ak\\2.Semester\\EaaGenbrug\\ServerAPI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -152,6 +152,10 @@
             "MongoDB.Driver": {
               "target": "Package",
               "version": "[2.25.0, )"
+            },
+            "Portable.BouncyCastle": {
+              "target": "Package",
+              "version": "[1.9.0, )"
             }
           },
           "imports": [
