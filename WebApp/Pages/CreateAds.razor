@@ -2,39 +2,6 @@
 @using Core.Model;
 @inject HttpClient Http;
 
-<h1 class="mb-3 mt-3">Tilføjede annoncer</h1>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Price</th>
-            <th>Location</th>
-            <th>Category</th>
-            <th>Image</th>
-
-            <th>Status</th>
-
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in shoppingList ?? new Ad[0])
-        {
-            <tr>
-                <td>@item.Title</td>
-                <td>@item.Price</td>
-                <td>@item.Location</td>
-                <td>@item.Category</td>
-                <td><img src="@item.ImageUrl" alt="Item Image" style="height:50px;" /></td>
-                <td>@item.Status</td>
-            </tr>
-        }
-
-    </tbody>
-</table>
-
-<img src="busy.gif" style="display:@busyDisplayStyle" />
-<h2>Tilføj annonce</h2>
-
 <EditForm EditContext="@aEditContext" class="row p-3" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
@@ -78,15 +45,14 @@
 </EditForm>
 
 @code {
-    // Style for billede der vises når data hentes. Se
-    // OnInitializedAsync().
-    private string busyDisplayStyle = "none";
+  
 
     // Objekt for formen der vises modal
-    private Ad _ad = new Ad();
 
-    // container for listen
-    private Ad[]? shoppingList = new Ad[0];
+    private Ad _adItem = new Ad();
+
+    
+
 
     // kontekst for formen
     private EditContext? aEditContext;
@@ -106,20 +72,15 @@
 
     private async Task AddShoppingItem()
     {
-        await Http.PostAsJsonAsync<Ad>($"{serverUrl}/api/shopping/add", _ad);
-        Console.WriteLine("Klient: add " + _ad.Title + " " + _ad.Price + " " + _ad.Location + " " + _ad.Category + " " + _ad.ImageUrl + " " + _ad.Status);
+        await Http.PostAsJsonAsync<Ad>($"{serverUrl}/api/shopping/add", _adItem);
+        Console.WriteLine("Klient: add " + _adItem.Title + " " + _adItem.Price + " " + _adItem.Location + " " + _adItem.Category + " " + _adItem.ImageUrl + " " + _adItem.Status);
         shoppingList = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/shopping/getall");
-        _ad = new(); // clear fields in form
+        _adItem = new(); // clear fields in form
+
     }
 
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        busyDisplayStyle = "block"; // tænd busy
-        shoppingList = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/shopping/getall");
-        busyDisplayStyle = "none"; // sluk busy
-    }
+    // container for listen
+    private Ad[]? shoppingList = new Ad[0];
 
     private async Task DeleteShoppingItem(Ad item)
     {

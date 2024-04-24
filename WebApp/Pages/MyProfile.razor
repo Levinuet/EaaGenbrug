@@ -1,29 +1,84 @@
 @page "/myprofile"
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
+@inject HttpClient Http;
+@using Core.Model;
 
-<h3>My Profile</h3>
+<h1>Min side</h1>
 
 @if (isLoggedIn)
 {
-    <p>Welcome to your profile page!</p>
-    <p>This page is accessible because you are logged in.</p>
-    <p>Username: @username</p>
-    <p>Your Ads: @ads</p>
-    <p>Your Purchases: @purchases</p>
-    <button class="btn btn-primary" @onclick="CreateAd">Create Ad</button>
+    <p>Velkommen til din side, @username! Her kan du se dine aktive annoncer og dine tidligere køb samt svare på købsanmodninger</p>
+
+    <button class="btn btn-primary" @onclick="CreateAd">Opret annonce</button>
+
+
+    <h2>Mine Annoncer</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Price</th>
+                <th>Location</th>
+                <th>Category</th>
+                <th>Image</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ad in activeAds)
+            {
+                <tr>
+                    <td>@ad.Title</td>
+                    <td>@ad.Price</td>
+                    <td>@ad.Location</td>
+                    <td>@ad.Category</td>
+                    <td><img src="@ad.ImageUrl" alt="Item Image" style="height:50px;" /></td>
+                    <td>@ad.Status</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h2>Mine Køb</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Price</th>
+                <th>Location</th>
+                <th>Category</th>
+                <th>Image</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ad in reservedAds)
+            {
+                <tr>
+                    <td>@ad.Title</td>
+                    <td>@ad.Price</td>
+                    <td>@ad.Location</td>
+                    <td>@ad.Category</td>
+                    <td><img src="@ad.ImageUrl" alt="Item Image" style="height:50px;" /></td>
+                    <td>@ad.Status</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
 else
 {
-    <p>You are not logged in. Please <a href="/login">click here to log in</a>.</p>
+    <p>Du er ikke logget ind <a href="/login">Klik her for at logge ind</a>.</p>
 }
+<img src="busy.gif" style="display:@busyDisplayStyle" />
 
 @code {
     private bool isLoggedIn = false;
     private string username = "Default User";
     private string ads = "No ads listed.";
     private string purchases = "No purchases made.";
-    
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -33,8 +88,24 @@ else
         if (isLoggedIn)
         {
             username = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "username") ?? "Default User";
-            ads = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "ads") ?? "No ads listed.";
-            purchases = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "purchases") ?? "No purchases made.";
+
+            // Show busy indicator
+            busyDisplayStyle = "block";
+
+            // Fetch all ads
+            var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/shopping/getall");
+
+            // Split ads into active and reserved
+            activeAds = allAds?.Where(ad => ad.Status == "Active").ToArray() ?? new Ad[0];
+            reservedAds = allAds?.Where(ad => ad.Status == "Reserved").ToArray() ?? new Ad[0];
+
+            // Hide busy indicator
+            busyDisplayStyle = "none";
+        }
+        else
+        {
+            activeAds = new Ad[0];
+            reservedAds = new Ad[0];
         }
     }
 
@@ -42,4 +113,17 @@ else
     {
         NavigationManager.NavigateTo("/create");
     }
-}
+
+    // container for listen
+    private Ad[]? shoppingList = new Ad[0];
+
+    // adresse på server
+    private string serverUrl = "https://localhost:7189";
+
+
+    private Ad[]? activeAds = new Ad[0];
+    private Ad[]? reservedAds = new Ad[0];
+
+
+    private string busyDisplayStyle = "none";
+    }

@@ -16,8 +16,5 @@ namespace ServerAPI.Repositories
 
         // Opdaterer element med Id = item.Id.
         void UpdateItem(Ad item);
-        Ad GetById(int id);
-        
-        void PurchaseAd(Ad item);
     }
 }

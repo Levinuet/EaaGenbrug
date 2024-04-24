@@ -65,17 +65,6 @@ namespace ServerAPI.Repositories
         {
             return collection.Find(Builders<Ad>.Filter.Empty).ToList().ToArray();
         }
-        public Ad GetById(int id)
-        {
-            return collection.Find(ad => ad.Id == id).FirstOrDefault();
-        }
-
-        public void PurchaseAd(Ad item)
-        {
-            var updateDef = Builders<Ad>.Update
-                .Set(x => x.Status, "Reserved");
-            collection.UpdateOne(x => x.Id == item.Id, updateDef);
-        }
 
         /*public ShoppingItem[] GetAllByShop(string shop)
         {
