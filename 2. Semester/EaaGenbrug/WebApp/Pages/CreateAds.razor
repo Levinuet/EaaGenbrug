@@ -1,0 +1,137 @@
+﻿@page "/create"
+@using Core.Model;
+@inject HttpClient Http;
+
+<h1 class="mb-3 mt-3">Tilføjede annoncer</h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Location</th>
+            <th>Category</th>
+            <th>Image</th>
+
+            <th>Status</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in shoppingList ?? new AdItem[0])
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.Price</td>
+                <td>@item.Location</td>
+                <td>@item.Category</td>
+                <td><img src="@item.ImageUrl" alt="Item Image" style="height:50px;" /></td>
+                <td>@item.Status</td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+<img src="busy.gif" style="display:@busyDisplayStyle" />
+<h2>Tilføj annonce</h2>
+
+<EditForm EditContext="@aEditContext" class="row p-3" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="col-md-12 mb-3">
+        <label for="Title">Title</label>
+        <InputText id="Title" @bind-Value="_adItem.Title" class="form-control" />
+    </div>
+    <div class="col-md-6 mb-3">
+        <label for="Price">Price</label>
+        <InputNumber id="Price" @bind-Value="_adItem.Price" class="form-control" />
+    </div>
+    <div class="col-md-6 mb-3">
+        <label for="Location">Location</label>
+        <InputText id="Location" @bind-Value="_adItem.Location" class="form-control" />
+    </div>
+
+    <div class="col-md-12 mb-3">
+        <label for="Description">Description</label>
+        <InputTextArea id="Description" @bind-Value="_adItem.Description" class="form-control" />
+    </div>
+    <div class="col-md-6 mb-3">
+        <label for="Category">Category</label>
+        <InputText id="Category" @bind-Value="_adItem.Category" class="form-control" />
+    </div>
+    <div class="col-md-6 mb-3">
+        <label for="ImageUrl">Image URL</label>
+        <InputText id="ImageUrl" @bind-Value="_adItem.ImageUrl" class="form-control" />
+    </div>
+    <div class="col-md-12 mb-3">
+        <label for="Status">Status</label>
+        <InputSelect @bind-Value="_adItem.Status" class="form-control">
+            <option value="Select status">Select status</option>
+            <option value="Active">Active</option>
+            <option value="Reserved">Reserved</option>
+            <option value="Inactive">Inactive</option>
+        </InputSelect>
+    </div>
+    <div class="col-12 mb-3">
+        <button type="submit" class="btn btn-primary">Add</button>
+    </div>
+</EditForm>
+
+@code {
+    // Style for billede der vises når data hentes. Se
+    // OnInitializedAsync().
+    private string busyDisplayStyle = "none";
+
+    // Objekt for formen der vises modal
+    private AdItem _adItem = new AdItem();
+
+    // container for listen
+    private AdItem[]? shoppingList = new AdItem[0];
+
+    // kontekst for formen
+    private EditContext? aEditContext;
+
+    // adresse på server
+    private string serverUrl = "https://localhost:7189";
+
+    protected override void OnInitialized()
+    {
+        aEditContext = new EditContext(_adItem);
+    }
+
+    public async Task HandleValidSubmit()
+    {
+        await AddShoppingItem();
+    }
+
+    private async Task AddShoppingItem()
+    {
+        await Http.PostAsJsonAsync<AdItem>($"{serverUrl}/api/shopping/add", _adItem);
+        Console.WriteLine("Klient: add " + _adItem.Title + " " + _adItem.Price + " " + _adItem.Location + " " + _adItem.Category + " " + _adItem.ImageUrl + " " + _adItem.Status);
+        shoppingList = await Http.GetFromJsonAsync<AdItem[]>($"{serverUrl}/api/shopping/getall");
+        _adItem = new(); // clear fields in form
+    }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        busyDisplayStyle = "block"; // tænd busy
+        shoppingList = await Http.GetFromJsonAsync<AdItem[]>($"{serverUrl}/api/shopping/getall");
+        busyDisplayStyle = "none"; // sluk busy
+    }
+
+    private async Task DeleteShoppingItem(AdItem item)
+    {
+        await Http.DeleteAsync($"{serverUrl}/api/shopping/delete/{item.Id}");
+
+        shoppingList = await Http.GetFromJsonAsync<AdItem[]>($"{serverUrl}/api/shopping/getall");
+
+    }
+
+    private async Task UpdateShoppingItem(AdItem item)
+    {
+        await Http.PutAsJsonAsync<AdItem>($"{serverUrl}/api/shopping/update", item);
+    }
+}
+

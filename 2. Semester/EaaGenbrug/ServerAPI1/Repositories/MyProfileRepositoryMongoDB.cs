@@ -1,4 +1,4 @@
-using System;
+/*using System;
 using Core.Model;
 using MongoDB.Driver;
 using static MongoDB.Driver.WriteConcern;
@@ -13,7 +13,7 @@ namespace ServerAPI.Repositories
         public MyProfileRepositoryMongoDB()
         {
             var password = "genbrug123"; 
-            var mongoUri = $" mongodb+srv://Miniprojekt:{password}@miniprojekt.nb8ncxm.mongodb.net/?retryWrites=true&w=majority";
+            var mongoUri = $"mongodb+srv://Miniprojekt:{password}@miniprojekt.nb8ncxm.mongodb.net/?retryWrites=true&w=majority";
            
             try
             {
@@ -74,3 +74,4 @@ namespace ServerAPI.Repositories
 
     }
 }
+*/

@@ -21,11 +21,23 @@ namespace ServerAPI1
                 builder.Configuration["MongoDB:ConnectionString"],
                 builder.Configuration["MongoDB:DatabaseName"]
             ));
+            builder.Services.AddSingleton<IAdRepository, AdRepositoryMongoDB>();
             builder.Services.AddScoped<UserRepository>();
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
 
             builder.Services.AddControllers();
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("policy",
+                                  policy =>
+                                  {
+                                      policy.AllowAnyOrigin();
+                                      policy.AllowAnyMethod();
+                                      policy.AllowAnyHeader();
+                                  });
+            });
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

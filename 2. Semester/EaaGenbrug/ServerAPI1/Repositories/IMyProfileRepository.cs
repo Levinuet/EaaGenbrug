@@ -1,4 +1,4 @@
-using Core.Model;
+/*using Core.Model;
 
 namespace ServerAPI.Repositories
 {
@@ -10,3 +10,4 @@ namespace ServerAPI.Repositories
         void UpdateAd(Ad ad);
     }
 }
+*/

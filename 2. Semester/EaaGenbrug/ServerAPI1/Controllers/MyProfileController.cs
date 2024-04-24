@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+/*using Microsoft.AspNetCore.Mvc;
 using Core.Model;
 using ServerAPI.Repositories;
 
@@ -17,7 +17,7 @@ namespace HelloBlazor.Server.Controllers
 
         [HttpGet]
         [Route("getall")] // Route to get all ads
-        public IEnumerable<Ad> GetAllAds()
+        public IEnumerable<AdItem> GetAllAds()
         {
             return _adRepository.GetAllAds();
         }
@@ -47,3 +47,4 @@ namespace HelloBlazor.Server.Controllers
         }
     }
 }
+*/
