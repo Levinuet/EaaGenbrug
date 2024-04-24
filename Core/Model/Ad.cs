@@ -1,3 +1,4 @@
+
 namespace Core.Model
 {
     public class Ad
@@ -14,6 +15,8 @@ namespace Core.Model
         public string Category { get; set; }
 
         public string Status { get; set; }
+        public string SellerUserName { get; set; }
+        public string BuyerUserName { get; set; } = "";
 
     }
 }
