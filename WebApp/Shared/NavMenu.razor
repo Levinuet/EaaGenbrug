@@ -35,16 +35,18 @@
 @code {
     private bool collapseNavMenu = true;
     private bool isLoggedIn = false;
+    private bool loginChecked = false;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (firstRender && !loginChecked)
         {
+            loginChecked = true;  // Prevent multiple checks
             var isLoggedInStr = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "isLoggedIn");
             isLoggedIn = isLoggedInStr == "true";
-            StateHasChanged(); // Trigger a UI update
+            StateHasChanged(); // Ensures the UI updates as soon as login status is retrieved
         }
     }
 

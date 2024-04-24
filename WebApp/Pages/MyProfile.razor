@@ -11,6 +11,7 @@
     <p>Username: @username</p>
     <p>Your Ads: @ads</p>
     <p>Your Purchases: @purchases</p>
+    <button class="btn btn-primary" @onclick="CreateAd">Create Ad</button>
 }
 else
 {
@@ -22,6 +23,7 @@ else
     private string username = "Default User";
     private string ads = "No ads listed.";
     private string purchases = "No purchases made.";
+    
 
     protected override async Task OnInitializedAsync()
     {
@@ -34,5 +36,10 @@ else
             ads = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "ads") ?? "No ads listed.";
             purchases = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "purchases") ?? "No purchases made.";
         }
+    }
+
+    private void CreateAd()
+    {
+        NavigationManager.NavigateTo("/create");
     }
 }
