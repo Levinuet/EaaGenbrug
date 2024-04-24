@@ -66,12 +66,12 @@ namespace ServerAPI.Repositories
             return collection.Find(Builders<Ad>.Filter.Empty).ToList().ToArray();
         }
 
-        /*public ShoppingItem[] GetAllByShop(string shop)
+        public void PurchaseAd(Ad item)
         {
-            var filter = Builders<ShoppingItem>.Filter.Where(r => r.Shop.Equals(shop));
-            return collection.Find(filter).ToList().ToArray();
-
-        }*/
+            var updateDef = Builders<Ad>.Update
+                .Set(x => x.Status, "Reserved");
+            collection.UpdateOne(x => x.Id == item.Id, updateDef);
+        }
 
         public void UpdateItem(Ad item)
         {

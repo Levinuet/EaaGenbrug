@@ -13,6 +13,8 @@ namespace ServerAPI.Repositories
 
         Ad[] GetAll();
 
+        void PurchaseAd (Ad ad);
+
 
         // Opdaterer element med Id = item.Id.
         void UpdateItem(Ad item);
