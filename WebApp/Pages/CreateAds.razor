@@ -7,32 +7,32 @@
     <ValidationSummary />
     <div class="col-md-12 mb-3">
         <label for="Title">Title</label>
-        <InputText id="Title" @bind-Value="_ad.Title" class="form-control" />
+        <InputText id="Title" @bind-Value="_Ad.Title" class="form-control" />
     </div>
     <div class="col-md-6 mb-3">
         <label for="Price">Price</label>
-        <InputNumber id="Price" @bind-Value="_ad.Price" class="form-control" />
+        <InputNumber id="Price" @bind-Value="_Ad.Price" class="form-control" />
     </div>
     <div class="col-md-6 mb-3">
         <label for="Location">Location</label>
-        <InputText id="Location" @bind-Value="_ad.Location" class="form-control" />
+        <InputText id="Location" @bind-Value="_Ad.Location" class="form-control" />
     </div>
 
     <div class="col-md-12 mb-3">
         <label for="Description">Description</label>
-        <InputTextArea id="Description" @bind-Value="_ad.Description" class="form-control" />
+        <InputTextArea id="Description" @bind-Value="_Ad.Description" class="form-control" />
     </div>
     <div class="col-md-6 mb-3">
         <label for="Category">Category</label>
-        <InputText id="Category" @bind-Value="_ad.Category" class="form-control" />
+        <InputText id="Category" @bind-Value="_Ad.Category" class="form-control" />
     </div>
     <div class="col-md-6 mb-3">
         <label for="ImageUrl">Image URL</label>
-        <InputText id="ImageUrl" @bind-Value="_ad.ImageUrl" class="form-control" />
+        <InputText id="ImageUrl" @bind-Value="_Ad.ImageUrl" class="form-control" />
     </div>
     <div class="col-md-12 mb-3">
         <label for="Status">Status</label>
-        <InputSelect @bind-Value="_ad.Status" class="form-control">
+        <InputSelect @bind-Value="_Ad.Status" class="form-control">
             <option value="Select status">Select status</option>
             <option value="Active">Active</option>
             <option value="Reserved">Reserved</option>
@@ -47,9 +47,7 @@
 @code {
   
 
-    // Objekt for formen der vises modal
-
-    private Ad _adItem = new Ad();
+    private Ad _Ad = new Ad();
 
     
 
@@ -62,7 +60,7 @@
 
     protected override void OnInitialized()
     {
-        aEditContext = new EditContext(_ad);
+        aEditContext = new EditContext(_Ad);
     }
 
     public async Task HandleValidSubmit()
@@ -72,10 +70,10 @@
 
     private async Task AddShoppingItem()
     {
-        await Http.PostAsJsonAsync<Ad>($"{serverUrl}/api/shopping/add", _adItem);
-        Console.WriteLine("Klient: add " + _adItem.Title + " " + _adItem.Price + " " + _adItem.Location + " " + _adItem.Category + " " + _adItem.ImageUrl + " " + _adItem.Status);
+        await Http.PostAsJsonAsync<Ad>($"{serverUrl}/api/shopping/add", _Ad);
+        Console.WriteLine("Klient: add " + _Ad.Title + " " + _Ad.Price + " " + _Ad.Location + " " + _Ad.Category + " " + _Ad.ImageUrl + " " + _Ad.Status);
         shoppingList = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/shopping/getall");
-        _adItem = new(); // clear fields in form
+        _Ad = new(); // clear fields in form
 
     }
 
