@@ -1,4 +1,6 @@
 ﻿@inherits LayoutComponentBase
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
 
 <PageTitle>WebApp</PageTitle>
 
@@ -9,7 +11,14 @@
 
     <main>
         <div class="top-row px-4">
-            <a href="/login/" target="_blank">Login</a>
+            @if (isLoggedIn)
+            {
+                <button @onclick="Logout">Logout</button>
+            }
+            else
+            {
+                <a href="/login/">Login</a>
+            }
         </div>
 
         <article class="content px-4">
@@ -17,3 +26,29 @@
         </article>
     </main>
 </div>
+
+@code {
+    private bool isLoggedIn = false;
+    private bool isRendered = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var isLoggedInStr = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "isLoggedIn");
+            isLoggedIn = isLoggedInStr == "true";
+            isRendered = true;
+            StateHasChanged(); // Re-render the component with the updated state
+        }
+    }
+
+    private async Task Logout()
+    {
+        // Update localStorage
+        await JSRuntime.InvokeVoidAsync("localStorage.removeItem", "isLoggedIn");
+        await JSRuntime.InvokeVoidAsync("localStorage.removeItem", "username");
+
+        // Redirect to the homepage or login page
+        NavigationManager.NavigateTo("/login", forceLoad: true);
+    }
+}
