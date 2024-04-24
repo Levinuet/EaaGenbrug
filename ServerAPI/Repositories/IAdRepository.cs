@@ -5,16 +5,16 @@ namespace ServerAPI.Repositories
     public interface IAdRepository
     {
         //Tildeler item en unik id og tilføjer den.
-        void AddItem(AdItem item);
+        void AddItem(Ad item);
 
         // Fjerner item, hvor item.Id = id. Hvis den ikke
         // findes sker ingenting
         void DeleteById(int id);
 
-        AdItem[] GetAll();
+        Ad[] GetAll();
 
 
         // Opdaterer element med Id = item.Id.
-        void UpdateItem(AdItem item);
+        void UpdateItem(Ad item);
     }
 }

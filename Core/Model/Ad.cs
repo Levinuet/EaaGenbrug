@@ -1,6 +1,6 @@
 namespace Core.Model
 {
-    public class AdItem
+    public class Ad
     {
         public int Id { get; set; }
         public string Title { get; set; } = "";

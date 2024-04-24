@@ -50,7 +50,7 @@
   
 
     // Objekt for formen der vises modal
-    private AdItem _adItem = new AdItem();
+    private Ad _adItem = new Ad();
 
     
 
@@ -72,28 +72,28 @@
 
     private async Task AddShoppingItem()
     {
-        await Http.PostAsJsonAsync<AdItem>($"{serverUrl}/api/shopping/add", _adItem);
+        await Http.PostAsJsonAsync<Ad>($"{serverUrl}/api/shopping/add", _adItem);
         Console.WriteLine("Klient: add " + _adItem.Title + " " + _adItem.Price + " " + _adItem.Location + " " + _adItem.Category + " " + _adItem.ImageUrl + " " + _adItem.Status);
-        shoppingList = await Http.GetFromJsonAsync<AdItem[]>($"{serverUrl}/api/shopping/getall");
+        shoppingList = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/shopping/getall");
         _adItem = new(); // clear fields in form
     }
 
     // container for listen
-    private AdItem[]? shoppingList = new AdItem[0];
+    private Ad[]? shoppingList = new Ad[0];
 
     
 
-    private async Task DeleteShoppingItem(AdItem item)
+    private async Task DeleteShoppingItem(Ad item)
     {
         await Http.DeleteAsync($"{serverUrl}/api/shopping/delete/{item.Id}");
 
-        shoppingList = await Http.GetFromJsonAsync<AdItem[]>($"{serverUrl}/api/shopping/getall");
+        shoppingList = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/shopping/getall");
 
     }
 
-    private async Task UpdateShoppingItem(AdItem item)
+    private async Task UpdateShoppingItem(Ad item)
     {
-        await Http.PutAsJsonAsync<AdItem>($"{serverUrl}/api/shopping/update", item);
+        await Http.PutAsJsonAsync<Ad>($"{serverUrl}/api/shopping/update", item);
     }
 }
 

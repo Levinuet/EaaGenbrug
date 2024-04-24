@@ -17,7 +17,7 @@ namespace HelloBlazor.Server.Controllers
 
         [HttpGet]
         [Route("getall")]
-        public IEnumerable<AdItem> GetAll()
+        public IEnumerable<Ad> GetAll()
         {
             return mRepo.GetAll();
         }
@@ -26,7 +26,7 @@ namespace HelloBlazor.Server.Controllers
 
         [HttpPost]
         [Route("add")]
-        public void AddItem(AdItem product)
+        public void AddItem(Ad product)
         {
             mRepo.AddItem(product);
         }
@@ -40,7 +40,7 @@ namespace HelloBlazor.Server.Controllers
 
         [HttpPut]
         [Route("update")]
-        public void UpdateItem(AdItem product)
+        public void UpdateItem(Ad product)
         {
             mRepo.UpdateItem(product);
         }

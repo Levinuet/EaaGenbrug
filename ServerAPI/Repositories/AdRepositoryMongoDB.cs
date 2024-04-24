@@ -8,7 +8,7 @@ namespace ServerAPI.Repositories
     public class AdRepositoryMongoDB : IAdRepository
     {
         private IMongoClient client;
-        private IMongoCollection<AdItem> collection;
+        private IMongoCollection<Ad> collection;
 
         public AdRepositoryMongoDB()
         {
@@ -39,16 +39,16 @@ namespace ServerAPI.Repositories
             var collectionName = "items";
 
             collection = client.GetDatabase(dbName)
-               .GetCollection<AdItem>(collectionName);
+               .GetCollection<Ad>(collectionName);
 
         }
 
-        public void AddItem(AdItem item)
+        public void AddItem(Ad item)
         {
             var max = 0;
-            if (collection.Count(Builders<AdItem>.Filter.Empty) > 0)
+            if (collection.Count(Builders<Ad>.Filter.Empty) > 0)
             {
-                max = collection.Find(Builders<AdItem>.Filter.Empty).SortByDescending(r => r.Id).Limit(1).ToList()[0].Id;
+                max = collection.Find(Builders<Ad>.Filter.Empty).SortByDescending(r => r.Id).Limit(1).ToList()[0].Id;
             }
             item.Id = max + 1;
             collection.InsertOne(item);
@@ -58,12 +58,12 @@ namespace ServerAPI.Repositories
         public void DeleteById(int id)
         {
             var deleteResult = collection
-                .DeleteOne(Builders<AdItem>.Filter.Where(r => r.Id == id));
+                .DeleteOne(Builders<Ad>.Filter.Where(r => r.Id == id));
         }
 
-        public AdItem[] GetAll()
+        public Ad[] GetAll()
         {
-            return collection.Find(Builders<AdItem>.Filter.Empty).ToList().ToArray();
+            return collection.Find(Builders<Ad>.Filter.Empty).ToList().ToArray();
         }
 
         /*public ShoppingItem[] GetAllByShop(string shop)
@@ -73,9 +73,9 @@ namespace ServerAPI.Repositories
 
         }*/
 
-        public void UpdateItem(AdItem item)
+        public void UpdateItem(Ad item)
         {
-            var updateDef = Builders<AdItem>.Update
+            var updateDef = Builders<Ad>.Update
                 .Set(x => x.Description, item.Description)
                 .Set(x => x.ImageUrl, item.ImageUrl)
                 .Set(x => x.Category, item.Category)

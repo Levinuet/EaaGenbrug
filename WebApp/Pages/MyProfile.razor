@@ -33,7 +33,7 @@ else
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in shoppingList ?? new AdItem[0])
+        @foreach (var item in shoppingList ?? new Ad[0])
         {
             <tr>
                 <td>@item.Title</td>
@@ -71,7 +71,7 @@ else
 
         {
             busyDisplayStyle = "block"; // tænd busy
-            shoppingList = await Http.GetFromJsonAsync<AdItem[]>($"{serverUrl}/api/shopping/getall");
+            shoppingList = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/shopping/getall");
             busyDisplayStyle = "none"; // sluk busy
         }
     }
@@ -82,14 +82,14 @@ else
     }
 
     // container for listen
-    private AdItem[]? shoppingList = new AdItem[0];
+    private Ad[]? shoppingList = new Ad[0];
 
     // adresse på server
     private string serverUrl = "https://localhost:7189";
 
 
     // Objekt for formen der vises modal
-    private AdItem _adItem = new AdItem();
+    private Ad _adItem = new Ad();
 
     private string busyDisplayStyle = "none";
     }
