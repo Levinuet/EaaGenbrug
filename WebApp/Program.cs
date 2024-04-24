@@ -1,24 +1,17 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using System;
-using Microsoft.Extensions.DependencyInjection;
+using WebApp.Data;
 
 
-namespace WebApp;
-
-public class Program
+//Hej Levi
+namespace WebApp
 {
-    public static async Task Main(string[] args)
+    public class Program
     {
-        var builder = WebAssemblyHostBuilder.CreateDefault(args);
-        builder.RootComponents.Add<App>("#app");
-        builder.RootComponents.Add<HeadOutlet>("head::after");
-
-            // Register HttpClient for server-side usage
-            builder.Services.AddScoped<HttpClient>();
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddHttpClient("MyClient", client =>
             {
@@ -29,6 +22,7 @@ public class Program
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
+            builder.Services.AddSingleton<WeatherForecastService>();
 
             // Register IHttpClientFactory
             builder.Services.AddHttpClient();
@@ -41,11 +35,14 @@ public class Program
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
+
             app.MapBlazorHub();
             app.MapFallbackToPage("/_Host");
+
             app.Run();
 
 
