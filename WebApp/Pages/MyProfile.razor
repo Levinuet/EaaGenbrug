@@ -1,15 +1,15 @@
 @page "/myprofile"
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
+@inject HttpClient Http;
+@using Core.Model;
 
-<h3>My Profile</h3>
+<h1>My Profile</h1>
 
 @if (isLoggedIn)
 {
     <p>Welcome to your profile page!</p>
-    <p>This page is accessible because you are logged in.</p>
     <p>Username: @username</p>
-    <p>Your Ads: @ads</p>
     <p>Your Purchases: @purchases</p>
     <button class="btn btn-primary" @onclick="CreateAd">Create Ad</button>
 }
@@ -17,6 +17,38 @@ else
 {
     <p>You are not logged in. Please <a href="/login">click here to log in</a>.</p>
 }
+
+<h1 class="mb-3 mt-3">Mine annoncer</h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Location</th>
+            <th>Category</th>
+            <th>Image</th>
+
+            <th>Status</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in shoppingList ?? new AdItem[0])
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.Price</td>
+                <td>@item.Location</td>
+                <td>@item.Category</td>
+                <td><img src="@item.ImageUrl" alt="Item Image" style="height:50px;" /></td>
+                <td>@item.Status</td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+<img src="busy.gif" style="display:@busyDisplayStyle" />
 
 @code {
     private bool isLoggedIn = false;
@@ -36,10 +68,28 @@ else
             ads = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "ads") ?? "No ads listed.";
             purchases = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "purchases") ?? "No purchases made.";
         }
+
+        {
+            busyDisplayStyle = "block"; // tænd busy
+            shoppingList = await Http.GetFromJsonAsync<AdItem[]>($"{serverUrl}/api/shopping/getall");
+            busyDisplayStyle = "none"; // sluk busy
+        }
     }
 
     private void CreateAd()
     {
         NavigationManager.NavigateTo("/create");
     }
-}
+
+    // container for listen
+    private AdItem[]? shoppingList = new AdItem[0];
+
+    // adresse på server
+    private string serverUrl = "https://localhost:7189";
+
+
+    // Objekt for formen der vises modal
+    private AdItem _adItem = new AdItem();
+
+    private string busyDisplayStyle = "none";
+    }
