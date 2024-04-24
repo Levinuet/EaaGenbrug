@@ -4,13 +4,13 @@
 @inject HttpClient Http;
 @using Core.Model;
 
-<h1>My Profile</h1>
+<h1>Min side</h1>
 
 @if (isLoggedIn)
 {
-    <p>Welcome to your profile page, @username!</p>
+    <p>Velkommen til din side, @username! Her kan du se dine aktive annoncer og dine tidligere køb samt svare på købsanmodninger</p>
 
-    <button class="btn btn-primary" @onclick="CreateAd">Create Ad</button>
+    <button class="btn btn-primary" @onclick="CreateAd">Opret annonce</button>
 
 
     <h2>Mine Annoncer</h2>
@@ -69,39 +69,8 @@
 }
 else
 {
-    <p>You are not logged in. Please <a href="/login">click here to log in</a>.</p>
+    <p>Du er ikke logget ind <a href="/login">Klik her for at logge ind</a>.</p>
 }
-
-<h1 class="mb-3 mt-3">Mine annoncer</h1>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Price</th>
-            <th>Location</th>
-            <th>Category</th>
-            <th>Image</th>
-
-            <th>Status</th>
-
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in shoppingList ?? new Ad[0])
-        {
-            <tr>
-                <td>@item.Title</td>
-                <td>@item.Price</td>
-                <td>@item.Location</td>
-                <td>@item.Category</td>
-                <td><img src="@item.ImageUrl" alt="Item Image" style="height:50px;" /></td>
-                <td>@item.Status</td>
-            </tr>
-        }
-
-    </tbody>
-</table>
-
 <img src="busy.gif" style="display:@busyDisplayStyle" />
 
 @code {
