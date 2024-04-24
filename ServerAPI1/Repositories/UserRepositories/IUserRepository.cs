@@ -1,6 +1,5 @@
 ﻿using Core.Models;
 using Microsoft.AspNetCore.Identity;
-using ServerAPI.Controllers;
 
 namespace ServerAPI.Repositories.UserRepositories
 {
