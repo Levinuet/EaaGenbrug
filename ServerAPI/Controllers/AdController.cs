@@ -44,7 +44,15 @@ namespace HelloBlazor.Server.Controllers
         {
             mRepo.UpdateItem(product);
         }
+        [HttpPost("purchase")]
+        public void PurchaseAd(Ad item)
+        {
+            mRepo.PurchaseAd(item);
+            
+        }
 
+        
+        
     }
 }
 

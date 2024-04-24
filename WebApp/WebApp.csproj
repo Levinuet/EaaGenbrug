@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\ServerAPI\ServerAPI.csproj" />
   </ItemGroup>
 
   <ItemGroup>
