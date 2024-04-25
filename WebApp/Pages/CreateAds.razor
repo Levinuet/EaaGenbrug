@@ -1,126 +1,117 @@
-﻿    @page "/create"
-    @using Core.Model;
-    @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
-    @inject HttpClient Http;
+﻿@page "/create"
+@using Core.Model;
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject HttpClient Http;
 
-    <EditForm EditContext="@aEditContext" class="row p-3" OnValidSubmit="@HandleValidSubmit">
-        <DataAnnotationsValidator/>
-        <ValidationSummary/>
+<!-- Form for creating a new advertisement -->
+<EditForm EditContext="@aEditContext" class="row p-3" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
 
-        <div class="col-md-12 mb-3">
-            <label for="Title">Title</label>
-                <InputText id="Title" @bind-Value="_Ad.Title" class="form-control"/>
-        </div>
+    <!-- Input field for title -->
+    <div class="col-md-12 mb-3">
+        <label for="Title">Title</label>
+        <InputText id="Title" @bind-Value="_Ad.Title" class="form-control" />
+    </div>
 
-        <div class="col-md-6 mb-3">
-            <label for="Price">Price</label>
-            <InputNumber id="Price" @bind-Value="_Ad.Price" class="form-control"/>
-        </div>        
+    <!-- Input field for price -->
+    <div class="col-md-6 mb-3">
+        <label for="Price">Price</label>
+        <InputNumber id="Price" @bind-Value="_Ad.Price" class="form-control" />
+    </div>
 
-        <div class="col-md-6 mb-3">
-            <label for="Location">Location</label>
-                <InputSelect @bind-Value="_Ad.Location" class="form-control" placeholder="Search...">
-                    <option value="Genbrug Sønderhøj 30">Genbrug Sønderhøj 30</option>
-                    <option value="Genbrug Sønderhøj 7G">Genbrug Sønderhøj 7G</option>
-                    <option value="Genbrug Guldbygning">Genbrug Guldbygning</option>
-                    <option value="At Seller">At Seller</option>
-                </InputSelect>
-        </div>
+    <!-- Select dropdown for location -->
+    <div class="col-md-6 mb-3">
+        <label for="Location">Location</label>
+        <InputSelect @bind-Value="_Ad.Location" class="form-control" placeholder="Search...">
+            <option value="Genbrug Sønderhøj 30">Genbrug Sønderhøj 30</option>
+            <option value="Genbrug Sønderhøj 7G">Genbrug Sønderhøj 7G</option>
+            <option value="Genbrug Guldbygning">Genbrug Guldbygning</option>
+            <option value="At Seller">At Seller</option>
+        </InputSelect>
+    </div>
 
-        <div class="col-md-12 mb-3">
-            <label for="Description">Description</label>
-            <InputTextArea id="Description" @bind-Value="_Ad.Description" class="form-control"/>
-        </div>
+    <!-- Text area for description -->
+    <div class="col-md-12 mb-3">
+        <label for="Description">Description</label>
+        <InputTextArea id="Description" @bind-Value="_Ad.Description" class="form-control" />
+    </div>
 
-        <div class="col-md-6 mb-3">
-            <label for="Category">Category</label>
-            <InputSelect @bind-Value="_Ad.Category" class="form-control">
-                <option value="Electronics">Electronics</option>
-                <option value="Books">Books</option>
-                <option value="Cloths">Cloths</option>
-            </InputSelect>
-        </div>
+    <!-- Select dropdown for category -->
+    <div class="col-md-6 mb-3">
+        <label for="Category">Category</label>
+        <InputSelect @bind-Value="_Ad.Category" class="form-control">
+            <option value="Electronics">Electronics</option>
+            <option value="Books">Books</option>
+            <option value="Cloths">Cloths</option>
+        </InputSelect>
+    </div>
 
-        <div class="col-md-6 mb-3">
-            <label for="ImageUrl">Image URL</label>
-            <InputText id="ImageUrl" @bind-Value="_Ad.ImageUrl" class="form-control"/>
-        </div>
+    <!-- Input field for image URL -->
+    <div class="col-md-6 mb-3">
+        <label for="ImageUrl">Image URL</label>
+        <InputText id="ImageUrl" @bind-Value="_Ad.ImageUrl" class="form-control" />
+    </div>
 
-        <div class="col-md-12 mb-3">
-            <label for="Status">Status</label>
-                <InputSelect @bind-Value="_Ad.Status" class="form-control">           
-                    <option value="Active">Active</option>
-                    <option value="Reserved">Reserved</option>
-                </InputSelect>
-        </div>
+    <!-- Select dropdown for status -->
+    <div class="col-md-12 mb-3">
+        <label for="Status">Status</label>
+        <InputSelect @bind-Value="_Ad.Status" class="form-control">
+            <option value="Active">Active</option>
+            <option value="Reserved">Reserved</option>
+        </InputSelect>
+    </div>
 
-        <div class="col-12 mb-3">
-            <button type="submit" class="btn btn-primary">Add</button>
-        </div>
+    <!-- Submit button -->
+    <div class="col-12 mb-3">
+        <button type="submit" class="btn btn-primary">Add</button>
+    </div>
+</EditForm>
 
-    </EditForm>
+@code {
+    private bool isLoggedIn = false;
+    private string username = "Default User";
+    private Ad _Ad = new Ad();
+    private EditContext? aEditContext;
+    private string serverUrl = "https://localhost:7189";
+    private Ad[]? shoppingList = new Ad[0];
 
-    @code {
-        private bool isLoggedIn = false;
-        private string username = "Default User";
-        private Ad _Ad = new Ad();
-        private EditContext? aEditContext;
-        private string serverUrl = "https://localhost:7189";
+    // Initialize form context and check user login status
+    protected override void OnInitialized()
+    {
+        aEditContext = new EditContext(_Ad);
+    }
 
-        //Container for the list
-        private Ad[]? shoppingList = new Ad[0];
-
-        protected override void OnInitialized()
+    // Asynchronous initialization to retrieve user authentication status
+    protected override async Task OnInitializedAsync()
+    {
+        try
         {
-            aEditContext = new EditContext(_Ad);
-        }
-
-        protected override async Task OnInitializedAsync()
-        {
-            try
+            isLoggedIn = await LocalStorage.GetItemAsync<bool>("isLoggedIn");
+            if (isLoggedIn)
             {
-                isLoggedIn = await LocalStorage.GetItemAsync<bool>("isLoggedIn");
-                if (isLoggedIn)
-                {
-                    username = await LocalStorage.GetItemAsync<string>("username") ?? "Default User";
-                }
-            }
-
-            catch (Exception ex)
-
-            {
-                Console.WriteLine("Error during initialization: " + ex.Message);
+                username = await LocalStorage.GetItemAsync<string>("username") ?? "Default User";
             }
         }
-
-        public async Task HandleValidSubmit()
+        catch (Exception ex)
         {
-            await AddShoppingItem();
-        }
-
-        private async Task AddShoppingItem()
-        {
-            // Set the SellerUserName to the current username
-            _Ad.SellerUserName = username;  
-
-            await Http.PostAsJsonAsync<Ad>($"{serverUrl}/api/eaagenbrug/add", _Ad);
-            Console.WriteLine("Client: add " + _Ad.Title + " " + _Ad.Price + " " + _Ad.Location + " " + _Ad.Category + " " + _Ad.ImageUrl + " " + _Ad.SellerUserName);
-
-            shoppingList = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
-
-            // Reset the Ad object to clear the form
-            _Ad = new Ad();  
-        }
-
-        private async Task DeleteShoppingItem(Ad item)
-        {
-            await Http.DeleteAsync($"{serverUrl}/api/eaagenbrug/delete/{item.Id}");
-
-            shoppingList = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
-        }
-
-        private async Task UpdateShoppingItem(Ad item)
-        {
-            await Http.PutAsJsonAsync<Ad>($"{serverUrl}/api/eaagenbrug/update", item);
+            Console.WriteLine("Error during initialization: " + ex.Message);
         }
     }
+
+    // Handle submission of the form with valid data
+    public async Task HandleValidSubmit()
+    {
+        await AddShoppingItem();
+    }
+
+    // Add a new shopping item
+    private async Task AddShoppingItem()
+    {
+        _Ad.SellerUserName = username;
+        await Http.PostAsJsonAsync<Ad>($"{serverUrl}/api/eaagenbrug/add", _Ad);
+        shoppingList = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
+        _Ad = new Ad();  // Reset the Ad object to clear the form
+    }
+
+}

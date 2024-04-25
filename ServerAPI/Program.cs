@@ -15,8 +15,6 @@ namespace ServerAPI1
                 client.BaseAddress = new Uri("https://localhost:7052/");
             });
 
-
-            // Add services to the container.
             builder.Services.AddSingleton(sp => new MongoDbContext(
                 builder.Configuration["MongoDB:ConnectionString"],
                 builder.Configuration["MongoDB:DatabaseName"]
@@ -25,7 +23,6 @@ namespace ServerAPI1
             builder.Services.AddScoped<IUserRepository, UserRepository>(); 
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
-
             builder.Services.AddControllers();
 
             builder.Services.AddCors(options =>
@@ -40,11 +37,10 @@ namespace ServerAPI1
             });
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            
             app.UseAuthorization();
             app.MapControllers();
             app.MapBlazorHub();
-
             app.Run();
 
         }
