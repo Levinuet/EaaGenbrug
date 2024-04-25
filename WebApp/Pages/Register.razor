@@ -1,7 +1,7 @@
 @page "/register"
-@inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
 @inject IHttpClientFactory HttpClientFactory
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @using Core.Model
 
 <h3>Register</h3>
@@ -49,9 +49,9 @@
 
         if (response.IsSuccessStatusCode)
         {
-            await JSRuntime.InvokeVoidAsync("localStorage.setItem", "isLoggedIn", "true");
-            await JSRuntime.InvokeVoidAsync("localStorage.setItem", "username", user.Username);
-            NavigationManager.NavigateTo("/myprofile");
+            await LocalStorage.SetItemAsync("isLoggedIn", true);
+            await LocalStorage.SetItemAsync("username", user.Username);
+            NavigationManager.NavigateTo("/myprofile", true);
         }
         else
         {
@@ -60,22 +60,12 @@
         }
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
-        if (firstRender)
+        var loggedIn = await LocalStorage.GetItemAsync<bool>("isLoggedIn");
+        if (loggedIn)
         {
-            try
-            {
-                var isLoggedInString = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "isLoggedIn");
-                if (isLoggedInString == "true")
-                {
-                    NavigationManager.NavigateTo("/myprofile");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error during JS interop: {ex.Message}");
-            }
+            NavigationManager.NavigateTo("/myprofile", true);
         }
     }
 }

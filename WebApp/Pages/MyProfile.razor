@@ -1,70 +1,45 @@
 @page "/myprofile"
-@inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
-@inject HttpClient Http;
-@using Core.Model;
+@inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@using Core.Model
 
 <h1>Min side</h1>
 
 @if (isLoggedIn)
 {
-    <p>Velkommen til din side, @username! Her kan du se dine aktive annoncer og dine tidligere køb samt svare på købsanmodninger</p>
+    <p>Velkommen til din side, @username! Her kan du se dine aktive annoncer og dine tidligere køb samt svare på købsanmodninger.</p>
 
     <button class="btn btn-primary" @onclick="CreateAd">Opret annonce</button>
 
-
     <h2>Mine Annoncer</h2>
     <table class="table table-striped">
-        <thead>
+        @foreach (var ad in activeAds)
+        {
             <tr>
-                <th>Title</th>
-                <th>Price</th>
-                <th>Location</th>
-                <th>Category</th>
-                <th>Image</th>
-                <th>Status</th>
+                <td>@ad.Title</td>
+                <td>@ad.Price.ToString("C")</td>
+                <td>@ad.Location</td>
+                <td>@ad.Category</td>
+                <td><img src="@ad.ImageUrl" alt="Item Image" style="height:50px;" /></td>
+                <td>@ad.Status</td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var ad in activeAds)
-            {
-                <tr>
-                    <td>@ad.Title</td>
-                    <td>@ad.Price</td>
-                    <td>@ad.Location</td>
-                    <td>@ad.Category</td>
-                    <td><img src="@ad.ImageUrl" alt="Item Image" style="height:50px;" /></td>
-                    <td>@ad.Status</td>
-                </tr>
-            }
-        </tbody>
+        }
     </table>
 
     <h2>Mine Køb</h2>
     <table class="table table-striped">
-        <thead>
+        @foreach (var ad in reservedAds)
+        {
             <tr>
-                <th>Title</th>
-                <th>Price</th>
-                <th>Location</th>
-                <th>Category</th>
-                <th>Image</th>
-                <th>Status</th>
+                <td>@ad.Title</td>
+                <td>@ad.Price.ToString("C")</td>
+                <td>@ad.Location</td>
+                <td>@ad.Category</td>
+                <td><img src="@ad.ImageUrl" alt="Item Image" style="height:50px;" /></td>
+                <td>@ad.Status</td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var ad in reservedAds)
-            {
-                <tr>
-                    <td>@ad.Title</td>
-                    <td>@ad.Price</td>
-                    <td>@ad.Location</td>
-                    <td>@ad.Category</td>
-                    <td><img src="@ad.ImageUrl" alt="Item Image" style="height:50px;" /></td>
-                    <td>@ad.Status</td>
-                </tr>
-            }
-        </tbody>
+        }
     </table>
 }
 else
@@ -76,36 +51,31 @@ else
 @code {
     private bool isLoggedIn = false;
     private string username = "Default User";
-    private string ads = "No ads listed.";
-    private string purchases = "No purchases made.";
+    private Ad[]? activeAds = new Ad[0];
+    private Ad[]? reservedAds = new Ad[0];
+    private string busyDisplayStyle = "none";
+    private string serverUrl = "https://localhost:7189";
 
-
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var isLoggedInStr = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "isLoggedIn");
-        isLoggedIn = isLoggedInStr != null && isLoggedInStr.Equals("true", StringComparison.OrdinalIgnoreCase);
+        if (firstRender)
+        {
+            await LoadProfileData();
+            StateHasChanged();
+        }
+    }
 
+    private async Task LoadProfileData()
+    {
+        isLoggedIn = await LocalStorage.GetItemAsync<bool>("isLoggedIn");
         if (isLoggedIn)
         {
-            username = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "username") ?? "Default User";
-
-            // Show busy indicator
-            busyDisplayStyle = "block";
-
-            // Fetch all ads
+            username = await LocalStorage.GetItemAsync<string>("username") ?? "Default User";
+            busyDisplayStyle = "block"; // Show busy indicator
             var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
-
-            // Split ads into active and reserved
             activeAds = allAds?.Where(ad => ad.SellerUserName == username).ToArray() ?? new Ad[0];
             reservedAds = allAds?.Where(ad => ad.BuyerUserName == username).ToArray() ?? new Ad[0];
-
-            // Hide busy indicator
-            busyDisplayStyle = "none";
-        }
-        else
-        {
-            activeAds = new Ad[0];
-            reservedAds = new Ad[0];
+            busyDisplayStyle = "none"; // Hide busy indicator
         }
     }
 
@@ -113,17 +83,4 @@ else
     {
         NavigationManager.NavigateTo("/create");
     }
-
-    // container for listen
-    private Ad[]? shoppingList = new Ad[0];
-
-    // adresse p� server
-    private string serverUrl = "https://localhost:7189";
-
-
-    private Ad[]? activeAds = new Ad[0];
-    private Ad[]? reservedAds = new Ad[0];
-
-
-    private string busyDisplayStyle = "none";
-    }
+}
