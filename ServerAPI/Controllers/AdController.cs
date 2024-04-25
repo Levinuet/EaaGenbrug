@@ -42,7 +42,7 @@ namespace HelloBlazor.Server.Controllers
         [Route("update")]
         public void UpdateItem(Ad product)
         {
-            mRepo.UpdateItem(product);
+            mRepo.UpdateAd(product);
         }
         [HttpPost("purchase")]
         public async Task<IActionResult> PurchaseAd([FromBody] Ad ad)

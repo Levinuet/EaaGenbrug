@@ -19,7 +19,7 @@ public class User
     public string Password { get; set; }
 }
 
-public class LoginModel
+public class LoginDto
     {
         public string Username { get; set; }
         public string Password { get; set; }
@@ -34,10 +34,4 @@ public class RegisterDto
     [Required]
     [EmailAddress]
     public string Email { get; set; }
-}
-
-public class LoginDto
-{
-    public string Username { get; set; }
-    public string Password { get; set; }
 }

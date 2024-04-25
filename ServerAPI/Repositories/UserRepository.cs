@@ -5,7 +5,7 @@ using static ServerAPI1.Program;
 
 namespace ServerAPI.Repositories
 {
-    public class UserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly IMongoCollection<User> _users;
 
