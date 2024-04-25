@@ -10,13 +10,12 @@ using static ServerAPI1.Program;
 [Route("[controller]")]
 public class UserController : ControllerBase
 {
-    private readonly UserRepository _userRepository;
     private readonly IMongoDatabase _database;
-
     public IMongoCollection<User> Users => _database.GetCollection<User>("Users");
 
+    private readonly IUserRepository _userRepository;
 
-    public UserController(UserRepository userRepository)
+    public UserController(IUserRepository userRepository)
     {
         _userRepository = userRepository;
     }
@@ -54,12 +53,7 @@ public class UserController : ControllerBase
 
         await _userRepository.CreateUser(user);
         return Ok("User registered successfully");
-
-
     }
-
-
-
 
     [HttpPost]
     [Route("login")]

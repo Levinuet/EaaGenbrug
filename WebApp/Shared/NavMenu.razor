@@ -1,4 +1,4 @@
-﻿@inject IJSRuntime JSRuntime
+﻿@inject Blazored.LocalStorage.ILocalStorageService LocalStorage 
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
@@ -34,15 +34,10 @@
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
-        if (firstRender && !loginChecked)
-        {
-            loginChecked = true;  // Prevent multiple checks
-            var isLoggedInStr = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "isLoggedIn");
-            isLoggedIn = isLoggedInStr == "true";
-            StateHasChanged(); // Ensures the UI updates as soon as login status is retrieved
-        }
+        isLoggedIn = await LocalStorage.GetItemAsync<bool>("isLoggedIn") || false;
+        loginChecked = true;  // This ensures we do not repeatedly check
     }
 
     private void ToggleNavMenu()
