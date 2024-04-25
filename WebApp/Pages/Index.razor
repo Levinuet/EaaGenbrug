@@ -17,19 +17,19 @@
     }
     else
     {
-        @foreach (var adsItem in eaagenbrug)
+        @foreach (var ad in eaagenbrug)
         {
                     <div class="card">
-                        <h5 class="card-title">@adsItem.Title</h5>
-                        <img class="card-img" src="@adsItem.ImageUrl" alt="Item Image">
+                        <h5 class="card-title">@ad.Title</h5>
+                        <img class="card-img" src="@ad.ImageUrl" alt="Item Image">
                         <div class="card-info">
-                            <p>Price: @adsItem.Price.ToString("C")</p>
-                            <p>Location: @adsItem.Location</p>
-                            <p>Category: @adsItem.Category</p>
-                            <p>Status: @adsItem.Status</p>
-                            <p>Description: @adsItem.Description</p>
-                            <p>Seller: @adsItem.SellerUserName</p>
-                            <button class="btn btn-primary" @onclick="() => PurchaseItem(adsItem)">Buy Now</button>
+                            <p>Price: @ad.Price.ToString("C")</p>
+                            <p>Location: @ad.Location</p>
+                            <p>Category: @ad.Category</p>
+                            <p>Status: @ad.Status</p>
+                            <p>Description: @ad.Description</p>
+                            <p>Seller: @ad.SellerUserName</p>
+                            <button class="btn btn-primary" @onclick="() => PurchaseItem(ad)">Buy Now</button>
                         </div>
                     </div>
         }
@@ -79,12 +79,12 @@
         }
     }
 
-    private async Task PurchaseItem(Ad adsItem)
+    private async Task PurchaseItem(Ad ad)
     {
-        adsItem.BuyerUserName = isLoggedIn ? username : "Guest"; // Set BuyerUserName based on login status
+        ad.BuyerUserName = isLoggedIn ? username : "Guest"; // Set BuyerUserName based on login status
 
-        var response = await Http.PostAsJsonAsync<Ad>($"{serverUrl}/api/eaagenbrug/purchase", adsItem);
-        Console.WriteLine("Client: purchase " + adsItem.Title + " by " + adsItem.BuyerUserName);
+        var response = await Http.PostAsJsonAsync<Ad>($"{serverUrl}/api/eaagenbrug/purchase", ad);
+        Console.WriteLine("Client: purchase " + ad.Title + " by " + ad.BuyerUserName);
 
         await FetchAds(); // Refresh the ads list after purchase
     }
