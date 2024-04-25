@@ -80,11 +80,12 @@ namespace ServerAPI.Repositories
         public void UpdateItem(Ad ad)
         {
             var updateDef = Builders<Ad>.Update
-                .Set(x => x.Description, ad.Description)
-                .Set(x => x.ImageUrl, ad.ImageUrl)
-                .Set(x => x.Category, ad.Category)
-                .Set(x => x.Status, ad.Status)
-                .Set(x => x.Location, ad.Location);
+        .Set(x => x.Title, ad.Title)
+        .Set(x => x.Price, ad.Price)
+        .Set(x => x.Location, ad.Location)
+        .Set(x => x.Category, ad.Category)
+        .Set(x => x.ImageUrl, ad.ImageUrl)
+        .Set(x => x.Status, ad.Status);
             collection.UpdateOne(x => x.Id == ad.Id, updateDef);
         }
     }
