@@ -2,67 +2,99 @@
 @using Core.Model
 @using ServerAPI.Repositories
 @inject HttpClient Http
-@inject IJSRuntime JSRuntime
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
-<h1 class="mb-3">Tilgængelige Annoncer</h1>
+<div class="col-md-6 mb-3">
+    <label for="FilterCategory">Filter by Category</label>
+    <select @onchange="FilterAds" class="form-control">
+        <option value="">All Categories</option>
+        <option value="IT-Udstyr">IT-Udstyr</option>
+        <option value="Bøger">Bøger</option>
+        <option value="Tøj">Tøj</option>
+    </select>
+</div>
 
 <div class="ads-container">
-    @if (eaagenbrug == null)
+    @if (DisplayedAds == null || !DisplayedAds.Any())
     {
-            <p class="loading"><em>Loading...</em></p>
-    }
-    else if (eaagenbrug.Length == 0)
-    {
-            <p class="no-ads"><em>No ads available.</em></p>
+        <p><em>Loading...</em></p> <!-- or "No ads available" based on your logic -->
     }
     else
     {
-        @foreach (var ad in eaagenbrug)
+        foreach (var ad in DisplayedAds)
         {
-                    <div class="card">
-                        <h5 class="card-title">@ad.Title</h5>
-                        <img class="card-img" src="@ad.ImageUrl" alt="Item Image">
-                        <div class="card-info">
-                            <p>Price: @ad.Price.ToString("C")</p>
-                            <p>Location: @ad.Location</p>
-                            <p>Category: @ad.Category</p>
-                            <p>Status: @ad.Status</p>
-                            <p>Description: @ad.Description</p>
-                            <p>Seller: @ad.SellerUserName</p>
-                            <button class="btn btn-primary" @onclick="() => PurchaseItem(ad)">Buy Now</button>
-                        </div>
-                    </div>
+            <div class="card">
+                <h5 class="card-title">@ad.Title</h5>
+                <img class="card-img" src="@ad.ImageUrl" alt="Item Image">
+                <div class="card-info">
+                    <p>Price: @ad.Price.ToString("C")</p>
+                    <p>Location: @ad.Location</p>
+                    <p>Category: @ad.Category</p>
+                    <p>Status: @ad.Status</p>
+                    <p>Description: @ad.Description</p>
+                    <p>Seller: @ad.SellerUserName</p>
+                    @if (isLoggedIn)
+                    {
+                        <button class="btn btn-primary" @onclick="() => PurchaseItem(ad)">Buy Now</button>
+                    }
+                </div>
+            </div>
         }
     }
 </div>
 
 @code {
-    private Ad[]? eaagenbrug;
     private string serverUrl = "https://localhost:7189";
-    private string username = "Default User"; // Default username
-    private bool isLoggedIn = false; // Login status
+    private string username = "Default User";
+    private string busyDisplayStyle = "none";
+    private bool isLoggedIn = false;
+    private bool firstRender = true;
+    private Ad[]? activeAds = new Ad[0];
+    private List<Ad> AllAds = new List<Ad>();
+    private List<Ad> DisplayedAds = new List<Ad>();
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await FetchUserDetails();
-        await FetchAds();
+        if (firstRender)
+        {
+            isLoggedIn = await LocalStorage.GetItemAsync<bool>("isLoggedIn");
+            await FetchAds();
+            this.firstRender = false;
+            StateHasChanged();  // Re-render the page to show updated UI after fetching local storage and ads
+        }
+    }
+
+    private void FilterAds(ChangeEventArgs e) 
+    { 
+        string selectedCategory = e?.Value?.ToString() ?? ""; UpdateDisplayedAds(selectedCategory); 
+    }
+
+    private void UpdateDisplayedAds(string category)
+    {
+        if (string.IsNullOrEmpty(category))
+        {
+            DisplayedAds = AllAds;
+        }
+        else
+        {
+            DisplayedAds = AllAds.Where(ad => ad.Category.Equals(category)).ToList();
+        }
     }
 
     private async Task FetchUserDetails()
     {
         try
         {
-            var isLoggedInStr = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "isLoggedIn");
-            isLoggedIn = isLoggedInStr != null && isLoggedInStr.Equals("true", StringComparison.OrdinalIgnoreCase);
-
+            isLoggedIn = await LocalStorage.GetItemAsync<bool>("isLoggedIn");
             if (isLoggedIn)
             {
-                username = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "username") ?? "Default User";
+                username = await LocalStorage.GetItemAsync<string>("username") ?? "Default User";
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Error fetching user details: " + ex.Message);
+            // Handle exception if needed
+            Console.WriteLine($"Error fetching user details: {ex.Message}");
         }
     }
 
@@ -70,24 +102,30 @@
     {
         try
         {
-            eaagenbrug = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
+            var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
+            if (allAds != null)
+            {
+                // Filter out ads with status "Sold" immediately after fetching
+                AllAds = allAds.Where(ad => ad.Status != "Sold").ToList();
+                UpdateDisplayedAds("");  // Initialize DisplayedAds with filtered ads
+            }
+            else
+            {
+                AllAds.Clear();  // Ensure list is empty if no data is fetched
+            }
         }
         catch (Exception ex)
         {
             Console.Error.WriteLine($"Failed to load ads: {ex.Message}");
-            eaagenbrug = Array.Empty<Ad>();
+            AllAds.Clear();
         }
     }
 
-    private async Task PurchaseItem(Ad ad)
+    public async Task PurchaseItem(Ad ad)
     {
-        ad.BuyerUserName = isLoggedIn ? username : "Guest"; // Set BuyerUserName based on login status
-
-        var response = await Http.PostAsJsonAsync<Ad>($"{serverUrl}/api/eaagenbrug/purchase", ad);
+        ad.BuyerUserName = isLoggedIn ? username : "Guest";
+        var response = await Http.PostAsJsonAsync($"{serverUrl}/api/eaagenbrug/purchase", ad);
         Console.WriteLine("Client: purchase " + ad.Title + " by " + ad.BuyerUserName);
-
-        await FetchAds(); // Refresh the ads list after purchase
+        await FetchAds();  // Refresh the ads list after a purchase
     }
-
 }
-    

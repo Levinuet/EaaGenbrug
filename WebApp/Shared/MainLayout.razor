@@ -1,39 +1,34 @@
 ﻿@inherits LayoutComponentBase
-@inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
-<PageTitle>WebApp</PageTitle>
+<PageTitle>EaaReuse Marketplace</PageTitle>
 
 <header style="background-color: mediumslateblue" class="p-3 text-bg-dark">
     <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
             <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
             </a>
-
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="#" class="nav-link px-2 text-white">Home</a></li>
+                <li><i class="bi bi-house-door-fill fs-3"></i><a href="/" class="nav-link px-2 text-white">EaaReuse Marketplace</a></li>
             </ul>
-
             <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
                 <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search">
             </form>
-
             @if (isLoggedIn)
             {
-                <button href="/myprofile" type="button" class="btn btn-warning">My Profile</button>
-                <button @onclick="Logout" type="button" class="btn btn-outline-light me-2">Logout</button>         
+                <a href="/myprofile" class="btn btn-warning">My Profile</a>
+                <button @onclick="Logout" type="button" class="btn btn-outline-light me-2">Logout</button>
             }
             else
             {
-                <button href="/login/" type="button" class="btn btn-outline-light me-2">Login</button>
-                <button href="/login/" type="button" class="btn btn-warning">Sign-up</button>
+                <a href="/login/" class="btn btn-outline-light me-2">Login</a>
+                <a href="/register/" class="btn btn-warning">Sign-up</a>
             }
-
-            <div class="text-end">
-            </div>
         </div>
     </div>
 </header>
+
 <main>
     <div>
         <article class="content px-4">
@@ -42,29 +37,21 @@
     </div>
 </main>
 
-
 @code {
     private bool isLoggedIn = false;
-    private bool isRendered = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            var isLoggedInStr = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "isLoggedIn");
-            isLoggedIn = isLoggedInStr == "true";
-            isRendered = true;
-            StateHasChanged(); // Re-render the component with the updated state
+            isLoggedIn = await LocalStorage.GetItemAsync<bool>("isLoggedIn");
+            StateHasChanged(); // Ensure the component re-renders after setting isLoggedIn
         }
     }
 
     private async Task Logout()
     {
-        // Update localStorage
-        await JSRuntime.InvokeVoidAsync("localStorage.removeItem", "isLoggedIn");
-        await JSRuntime.InvokeVoidAsync("localStorage.removeItem", "username");
-
-        // Redirect to the homepage or login page
-        NavigationManager.NavigateTo("/login", forceLoad: true);
+        await LocalStorage.RemoveItemAsync("isLoggedIn");
+        NavigationManager.NavigateTo("/login", true);
     }
 }

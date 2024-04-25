@@ -1,0 +1,79 @@
+@page "/PurchasedAds"
+@using Core.Model
+@inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager NavigationManager
+
+<button class="btn btn-primary" @onclick="BackToMyProfile">Back to "My Profile"</button>
+
+@if (purchasedAds != null && purchasedAds.Any())
+    {
+        <div class="purchased-products">
+            <h2>My purchases</h2>
+            @foreach (var ad in purchasedAds)
+            {
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">@ad.Title</h5>
+                        <img class="card-img" src="@ad.ImageUrl" alt="@ad.Title Image" style="height: 100px;">
+                        <p class="card-text">Price: @ad.Price.ToString("C")</p>
+                        <p class="card-text">Location: @ad.Location</p>
+                        <p class="card-text">Category: @ad.Category</p>
+                        <p class="card-status">@ad.Status</p>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+else
+    {
+        <p>You have no previous purchases.</p>
+    }
+
+@code {
+    private Ad[]? purchasedAds;
+    private string serverUrl = "https://localhost:7189";
+    private string username = "Default User";
+    private string busyDisplayStyle = "none";
+    private bool isLoggedIn = false; // Login status
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadProfileData();
+            await FetchAds();
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadProfileData()
+    {
+        isLoggedIn = await LocalStorage.GetItemAsync<bool>("isLoggedIn");
+        if (isLoggedIn)
+        {
+            username = await LocalStorage.GetItemAsync<string>("username") ?? "Default User";
+            busyDisplayStyle = "block";
+        }
+    }
+
+    private async Task FetchAds()
+    {
+        try
+        {
+            var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
+            purchasedAds = allAds?.Where(ad => ad.BuyerUserName == username && ad.Status == "Sold").ToArray() ?? new Ad[0];
+            busyDisplayStyle = "none";
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Failed to load ads: {ex.Message}");
+            purchasedAds = Array.Empty<Ad>();
+        }
+    }
+    
+    private void BackToMyProfile()
+    {
+        NavigationManager.NavigateTo("/myprofile");
+    }
+}

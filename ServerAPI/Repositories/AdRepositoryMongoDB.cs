@@ -14,9 +14,7 @@ namespace ServerAPI.Repositories
         {
             var password = "XdWOg0DZEhGTpzuX";
             var mongoUri = $"mongodb+srv://eaa23rao:{password}@shopping.dujfobz.mongodb.net/?retryWrites=true&w=majority";
-
-
-
+            
             try
             {
                 client = new MongoClient(mongoUri);
@@ -40,11 +38,9 @@ namespace ServerAPI.Repositories
 
             collection = client.GetDatabase(dbName)
                .GetCollection<Ad>(collectionName);
-
         }
-
-
-        public void AddItem(Ad ad)
+        
+        public void AddAd(Ad ad)
         {
             var max = 0;
             if (collection.Count(Builders<Ad>.Filter.Empty) > 0)
@@ -69,26 +65,36 @@ namespace ServerAPI.Repositories
 
         public void PurchaseAd(Ad ad)
         {
+            if (ad.Status != "Reserved")
+            {
+                var updateDef = Builders<Ad>.Update
+            .Set(x => x.Status, "Reserved")
+            .Set(x => x.BuyerUserName, ad.BuyerUserName);
+
+                collection.UpdateOne(x => x.Id == ad.Id, updateDef);
+            }
+        }
+        public void ApproveAd(Ad ad)
+        {
 
             var updateDef = Builders<Ad>.Update
-                .Set(x => x.Status, "Reserved")
-                  .Set(x => x.BuyerUserName, ad.BuyerUserName);
+                .Set(x => x.Status, "Sold");
+ 
 
 
             collection.UpdateOne(x => x.Id == ad.Id, updateDef);
         }
 
-        public void UpdateItem(Ad ad)
-
+        public void UpdateAd(Ad ad)
         {
             var updateDef = Builders<Ad>.Update
-                .Set(x => x.Description, ad.Description)
-                .Set(x => x.ImageUrl, ad.ImageUrl)
-                .Set(x => x.Category, ad.Category)
-                .Set(x => x.Status, ad.Status)
-                .Set(x => x.Location, ad.Location);
+        .Set(x => x.Title, ad.Title)
+        .Set(x => x.Price, ad.Price)
+        .Set(x => x.Location, ad.Location)
+        .Set(x => x.Category, ad.Category)
+        .Set(x => x.ImageUrl, ad.ImageUrl)
+        .Set(x => x.Status, ad.Status);
             collection.UpdateOne(x => x.Id == ad.Id, updateDef);
         }
     }
 }
-

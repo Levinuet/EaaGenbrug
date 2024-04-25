@@ -1,129 +1,196 @@
 @page "/myprofile"
-@inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
-@inject HttpClient Http;
+@inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @using Core.Model;
 
-<h1>Min side</h1>
+<h1>My Profile Page</h1>
 
 @if (isLoggedIn)
 {
-    <p>Velkommen til din side, @username! Her kan du se dine aktive annoncer og dine tidligere k�b samt svare p� k�bsanmodninger</p>
+<div class="welcome-message">
+    <p>Welcome to your Profile Page, @username! Here you can see your Active, Reserved and Sold Ads - Aswell as your purchased Ads.</p>
+    <button class="btn btn-primary" @onclick="CreateAd">Create Ad</button>
+    <button class="btn btn-primary" @onclick="Purchasedads">Se tidligere køb</button>
+</div>
+    <h2>My Ads</h2>
+<div class="ads-container">
+    
+        @foreach (var ad in activeAds)
+        {
+            <div class="card">
+            <h5 class="card-title">@ad.Title</h5>
+            <img class="card-img" src="@ad.ImageUrl" alt="Item Image" style="height: 100px;">
+            <p class="card-text">Price: @ad.Price.ToString("C")</p>
+            <p class="card-text">Location: @ad.Location</p>
+            <p class="card-text">Category: @ad.Category</p>
+            <p class="@(ad.Status == "Reserved" ? "card-status-r" : "")">@ad.Status</p>
+                @if (ad.Status == "Reserved")
+                    {
+                    <button class="btn btn-success sold-btn" @onclick="() => ApprovePurchase(ad)">Mark as Sold</button>
+                    }
+            </div>
+        }
+</div>
 
-    <button class="btn btn-primary" @onclick="CreateAd">Opret annonce</button>
-
-
-    <h2>Mine Annoncer</h2>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Price</th>
-                <th>Location</th>
-                <th>Category</th>
-                <th>Image</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var ad in activeAds)
-            {
-                <tr>
-                    <td>@ad.Title</td>
-                    <td>@ad.Price</td>
-                    <td>@ad.Location</td>
-                    <td>@ad.Category</td>
-                    <td><img src="@ad.ImageUrl" alt="Item Image" style="height:50px;" /></td>
-                    <td>@ad.Status</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <h2>Mine K�b</h2>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Price</th>
-                <th>Location</th>
-                <th>Category</th>
-                <th>Image</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var ad in reservedAds)
-            {
-                <tr>
-                    <td>@ad.Title</td>
-                    <td>@ad.Price</td>
-                    <td>@ad.Location</td>
-                    <td>@ad.Category</td>
-                    <td><img src="@ad.ImageUrl" alt="Item Image" style="height:50px;" /></td>
-                    <td>@ad.Status</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="sold-products">
+        <h2>Solgte produkter</h2>
+        @foreach (var ad in soldAds)
+        {
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">@ad.Title</h5>
+                    <img class="card-img" src="@ad.ImageUrl" alt="Item Image" style="height: 100px;">
+                    <p class="card-text">Price: @ad.Price.ToString("C")</p>
+                    <p class="card-text">Location: @ad.Location</p>
+                    <p class="card-text">Category: @ad.Category</p>
+                    <p class="card-status-s">@ad.Status</p>
+                </div>
+            </div>
+        }
+    </div>
 }
 else
 {
-    <p>Du er ikke logget ind <a href="/login">Klik her for at logge ind</a>.</p>
+<p>You're not logged in <a href="/login">Click here to login</a>.</p>
+}
+
+@if (purchasedAds != null && purchasedAds.Any())
+{
+<div class="purchased-products">
+    <h2>My purchases</h2>
+    @foreach (var ad in purchasedAds)
+    {
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">@ad.Title</h5>
+            <img class="card-img" src="@ad.ImageUrl" alt="@ad.Title Image" style="height: 100px;">
+            <p class="card-text">Price: @ad.Price.ToString("C")</p>
+            <p class="card-text">Location: @ad.Location</p>
+            <p class="card-text">Category: @ad.Category</p>
+            <p class="card-status">@ad.Status</p>
+        </div>
+    </div>
+    }
+</div>
 }
 <img src="busy.gif" style="display:@busyDisplayStyle" />
+    
+    <!--PopUp window for editing an Ad -->
+    @if (editingAd != null)
+    {
+        <div class="modal" tabindex="-1" style="display:block">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Ad</h5>
+                        <button type="button" class="close" @onclick="CancelEdit">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" @bind="editingAd.Title" class="form-control mb-2" placeholder="Title">
+                        <input type="number" @bind="editingAd.Price" class="form-control mb-2" placeholder="Price">
+                        <input type="text" @bind="editingAd.Location" class="form-control mb-2" placeholder="Location">
+                        <input type="text" @bind="editingAd.Category" class="form-control mb-2" placeholder="Category">
+                        <input type="text" @bind="editingAd.ImageUrl" class="form-control mb-2" placeholder="Image URL">
+                        <input type="text" @bind="editingAd.Status" class="form-control mb-2" placeholder="Status">
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" @onclick="() => SaveAd(editingAd)">Save</button>
+                        <button class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 
 @code {
     private bool isLoggedIn = false;
     private string username = "Default User";
-    private string ads = "No ads listed.";
-    private string purchases = "No purchases made.";
+    private Ad[]? activeAds = new Ad[0];
+    private Ad[]? soldAds = new Ad[0];
+    private Ad[]? purchasedAds = new Ad[0];
+    private string busyDisplayStyle = "none";
+    private string serverUrl = "https://localhost:7189";
+    private Ad? editingAd; // Tracks the ad currently being edited
 
-
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var isLoggedInStr = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "isLoggedIn");
-        isLoggedIn = isLoggedInStr != null && isLoggedInStr.Equals("true", StringComparison.OrdinalIgnoreCase);
-
-        if (isLoggedIn)
+        if (firstRender)
         {
-            username = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "username") ?? "Default User";
-
-            // Show busy indicator
-            busyDisplayStyle = "block";
-
-            // Fetch all ads
-            var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
-
-            // Split ads into active and reserved
-            activeAds = allAds?.Where(ad => ad.SellerUserName == username).ToArray() ?? new Ad[0];
-            reservedAds = allAds?.Where(ad => ad.BuyerUserName == username).ToArray() ?? new Ad[0];
-
-            // Hide busy indicator
-            busyDisplayStyle = "none";
-        }
-        else
-        {
-            activeAds = new Ad[0];
-            reservedAds = new Ad[0];
+            await LoadProfileData();
+            StateHasChanged();
         }
     }
 
+    private async Task LoadProfileData()
+    {
+        isLoggedIn = await LocalStorage.GetItemAsync<bool>("isLoggedIn");
+        if (isLoggedIn)
+        {
+            username = await LocalStorage.GetItemAsync<string>("username") ?? "Default User";
+            busyDisplayStyle = "block"; // Show busy indicator
+            var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
+            activeAds = allAds?.Where(ad => ad.SellerUserName == username && ad.Status != "Sold").ToArray() ?? new Ad[0];
+            soldAds = allAds?.Where(ad => ad.SellerUserName == username && ad.Status == "Sold").ToArray() ?? new Ad[0];
+            purchasedAds = allAds?.Where(ad => ad.BuyerUserName == username && ad.Status == "Sold").ToArray() ?? new Ad[0];
+            busyDisplayStyle = "none"; // Hide busy indicator
+        }     
+        else
+        {
+          activeAds = new Ad[0];
+          soldAds = new Ad[0];
+        }
+    }
+          
     private void CreateAd()
     {
         NavigationManager.NavigateTo("/create");
     }
 
-    // container for listen
-    private Ad[]? shoppingList = new Ad[0];
-
-    // adresse p� server
-    private string serverUrl = "https://localhost:7189";
-
-
-    private Ad[]? activeAds = new Ad[0];
-    private Ad[]? reservedAds = new Ad[0];
-
-
-    private string busyDisplayStyle = "none";
+    private void Purchasedads()
+    {
+        NavigationManager.NavigateTo("/purchasedads");
     }
+              
+     private async Task ApprovePurchase(Ad ad)
+     {
+        ad.BuyerUserName = isLoggedIn ? username : "Guest"; // Set BuyerUserName based on login status
+
+        var response = await Http.PostAsJsonAsync<Ad>($"{serverUrl}/api/eaagenbrug/approve", ad);
+        var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
+        activeAds = allAds?.Where(ad => ad.SellerUserName == username && ad.Status != "Sold").ToArray() ?? new Ad[0];
+        soldAds = allAds?.Where(ad => ad.SellerUserName == username && ad.Status == "Sold").ToArray() ?? new Ad[0];
+     }
+
+    private void EditAd(Ad ad)
+    {
+        editingAd = ad; // Open the modal with the ad details
+    }
+
+    private async Task SaveAd(Ad ad)
+    {
+        try
+        {
+            var response = await Http.PutAsJsonAsync($"{serverUrl}/api/eaagenbrug/update", ad);
+            if (response.IsSuccessStatusCode)
+            {
+                editingAd = null; // Attempt to close the modal
+                StateHasChanged(); // Ensure UI updates
+            }
+            else
+            {
+                Console.WriteLine("Failed to update the ad: " + await response.Content.ReadAsStringAsync());
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error saving ad: " + ex.Message);
+            // Optionally, handle errors such as displaying an error message to the user
+        }
+    }
+
+    private void CancelEdit()
+    {
+        editingAd = null; // Close the modal
+    }
+}

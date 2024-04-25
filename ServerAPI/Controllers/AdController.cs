@@ -9,7 +9,6 @@ namespace HelloBlazor.Server.Controllers
     public class ShoppingController : ControllerBase
     {
         private IAdRepository mRepo;
-
         public ShoppingController(IAdRepository repo)
         {
             mRepo = repo;
@@ -21,8 +20,6 @@ namespace HelloBlazor.Server.Controllers
         {
             return mRepo.GetAll();
         }
-
-
 
         [HttpPost]
         [Route("add")]
@@ -44,6 +41,7 @@ namespace HelloBlazor.Server.Controllers
         {
             mRepo.UpdateAd(product);
         }
+
         [HttpPost("purchase")]
         public async Task<IActionResult> PurchaseAd([FromBody] Ad ad)
         {
@@ -52,8 +50,12 @@ namespace HelloBlazor.Server.Controllers
 
         }
 
-        
-        
+        [HttpPost("approve")]
+        public async Task<IActionResult> ApproveAd([FromBody] Ad ad)
+        {
+            mRepo.ApproveAd(ad);
+            return Ok();
+
+        }    
     }
 }
-
