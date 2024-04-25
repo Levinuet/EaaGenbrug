@@ -3,6 +3,7 @@
 @inject NavigationManager NavigationManager
 @inject HttpClient Http;
 @using Core.Model;
+@using ServerAPI.Repositories;
 
 <h1>Min side</h1>
 
@@ -11,7 +12,6 @@
     <p>Velkommen til din side, @username! Her kan du se dine aktive annoncer og dine tidligere køb samt svare på købsanmodninger</p>
 
     <button class="btn btn-primary" @onclick="CreateAd">Opret annonce</button>
-
 
     <h2>Mine Annoncer</h2>
     <table class="table table-striped">
@@ -23,6 +23,7 @@
                 <th>Category</th>
                 <th>Image</th>
                 <th>Status</th>
+                <th>Edit</th>
             </tr>
         </thead>
         <tbody>
@@ -35,37 +36,39 @@
                     <td>@ad.Category</td>
                     <td><img src="@ad.ImageUrl" alt="Item Image" style="height:50px;" /></td>
                     <td>@ad.Status</td>
+                    <td><button class="btn btn-warning" @onclick="() => EditAd(ad)">Edit</button></td>
                 </tr>
             }
         </tbody>
     </table>
 
+    <!-- Modal Popup for Editing Ad -->
+    @if (editingAd != null)
+    {
+        <div class="modal" tabindex="-1" style="display:block">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Ad</h5>
+                        <button type="button" class="close" @onclick="CancelEdit">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" @bind="editingAd.Title" class="form-control mb-2" placeholder="Title">
+                        <input type="number" @bind="editingAd.Price" class="form-control mb-2" placeholder="Price">
+                        <input type="text" @bind="editingAd.Location" class="form-control mb-2" placeholder="Location">
+                        <input type="text" @bind="editingAd.Category" class="form-control mb-2" placeholder="Category">
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" @onclick="() => SaveAd(editingAd)">Save</button>
+                        <button class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
     <h2>Mine Køb</h2>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Price</th>
-                <th>Location</th>
-                <th>Category</th>
-                <th>Image</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var ad in reservedAds)
-            {
-                <tr>
-                    <td>@ad.Title</td>
-                    <td>@ad.Price</td>
-                    <td>@ad.Location</td>
-                    <td>@ad.Category</td>
-                    <td><img src="@ad.ImageUrl" alt="Item Image" style="height:50px;" /></td>
-                    <td>@ad.Status</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <!-- Purchases Table -->
 }
 else
 {
@@ -76,9 +79,11 @@ else
 @code {
     private bool isLoggedIn = false;
     private string username = "Default User";
-    private string ads = "No ads listed.";
-    private string purchases = "No purchases made.";
-
+    private Ad[]? activeAds = new Ad[0];
+    private Ad[]? reservedAds = new Ad[0];
+    private string busyDisplayStyle = "none";
+    private string serverUrl = "https://localhost:7189";
+    private Ad? editingAd; // Tracks the ad currently being edited
 
     protected override async Task OnInitializedAsync()
     {
@@ -109,21 +114,29 @@ else
         }
     }
 
+
     private void CreateAd()
     {
         NavigationManager.NavigateTo("/create");
     }
 
-    // container for listen
-    private Ad[]? shoppingList = new Ad[0];
-
-    // adresse p� server
-    private string serverUrl = "https://localhost:7189";
-
-
-    private Ad[]? activeAds = new Ad[0];
-    private Ad[]? reservedAds = new Ad[0];
-
-
-    private string busyDisplayStyle = "none";
+    private void EditAd(Ad ad)
+    {
+        editingAd = ad; // Open the modal with the ad details
     }
+
+    private async Task SaveAd(Ad ad)
+    {
+        var response = await Http.PutAsJsonAsync($"{serverUrl}/api/eaagenbrug/updateitem", ad);
+        if (response.IsSuccessStatusCode)
+        {
+            editingAd = null; // Close the modal on success
+            StateHasChanged();
+        }
+    }
+
+    private void CancelEdit()
+    {
+        editingAd = null; // Close the modal
+    }
+}
