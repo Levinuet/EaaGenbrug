@@ -96,8 +96,8 @@ else
             var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/shopping/getall");
 
             // Split ads into active and reserved
-            activeAds = allAds?.Where(ad => ad.Status == "Active").ToArray() ?? new Ad[0];
-            reservedAds = allAds?.Where(ad => ad.Status == "Reserved").ToArray() ?? new Ad[0];
+            activeAds = allAds?.Where(ad => ad.SellerUserName == username).ToArray() ?? new Ad[0];
+            reservedAds = allAds?.Where(ad => ad.BuyerUserName == username).ToArray() ?? new Ad[0];
 
             // Hide busy indicator
             busyDisplayStyle = "none";
