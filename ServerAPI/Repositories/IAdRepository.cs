@@ -4,7 +4,10 @@ namespace ServerAPI.Repositories
 {
     public interface IAdRepository
     {
-        void AddAd(Ad ad);
+
+        //Tildeler item en unik id og tilføjer den.
+        void AddItem(Ad ad);
+
 
         void DeleteById(int id);
 
@@ -12,6 +15,7 @@ namespace ServerAPI.Repositories
 
         void PurchaseAd (Ad ad);
 
-        void UpdateAd(Ad ad);
+        // Opdaterer element med Id = item.Id.
+        void UpdateItem(Ad ad);
     }
 }

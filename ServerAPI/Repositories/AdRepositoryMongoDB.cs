@@ -35,23 +35,24 @@ namespace ServerAPI.Repositories
             // Provide the name of the database and collection you want to use.
             // If they don't already exist, the driver and Atlas will create them
             // automatically when you first write data.
-            var dbName = "Shopping";
-            var collectionName = "items";
+            var dbName = "Eaagenbrug";
+            var collectionName = "Ads";
 
             collection = client.GetDatabase(dbName)
                .GetCollection<Ad>(collectionName);
 
         }
 
-        public void AddAd(Ad item)
+
+        public void AddItem(Ad ad)
         {
             var max = 0;
             if (collection.Count(Builders<Ad>.Filter.Empty) > 0)
             {
                 max = collection.Find(Builders<Ad>.Filter.Empty).SortByDescending(r => r.Id).Limit(1).ToList()[0].Id;
             }
-            item.Id = max + 1;
-            collection.InsertOne(item);
+            ad.Id = max + 1;
+            collection.InsertOne(ad);
 
         }
 
@@ -66,26 +67,27 @@ namespace ServerAPI.Repositories
             return collection.Find(Builders<Ad>.Filter.Empty).ToList().ToArray();
         }
 
-        public void PurchaseAd(Ad item)
+        public void PurchaseAd(Ad ad)
         {
 
             var updateDef = Builders<Ad>.Update
                 .Set(x => x.Status, "Reserved")
-                  .Set(x => x.BuyerUserName, item.BuyerUserName);
+                  .Set(x => x.BuyerUserName, ad.BuyerUserName);
 
 
-            collection.UpdateOne(x => x.Id == item.Id, updateDef);
+            collection.UpdateOne(x => x.Id == ad.Id, updateDef);
         }
 
-        public void UpdateAd(Ad item)
+        public void UpdateItem(Ad ad)
+
         {
             var updateDef = Builders<Ad>.Update
-                .Set(x => x.Description, item.Description)
-                .Set(x => x.ImageUrl, item.ImageUrl)
-                .Set(x => x.Category, item.Category)
-                .Set(x => x.Status, item.Status)
-                .Set(x => x.Location, item.Location);
-            collection.UpdateOne(x => x.Id == item.Id, updateDef);
+                .Set(x => x.Description, ad.Description)
+                .Set(x => x.ImageUrl, ad.ImageUrl)
+                .Set(x => x.Category, ad.Category)
+                .Set(x => x.Status, ad.Status)
+                .Set(x => x.Location, ad.Location);
+            collection.UpdateOne(x => x.Id == ad.Id, updateDef);
         }
     }
 }
