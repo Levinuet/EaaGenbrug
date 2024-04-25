@@ -57,6 +57,33 @@ else
 <p>Du er ikke logget ind <a href="/login">Klik her for at logge ind</a>.</p>
 }
 <img src="busy.gif" style="display:@busyDisplayStyle" />
+    
+    <!--PopUp window for editing an Ad -->
+    @if (editingAd != null)
+    {
+        <div class="modal" tabindex="-1" style="display:block">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Ad</h5>
+                        <button type="button" class="close" @onclick="CancelEdit">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" @bind="editingAd.Title" class="form-control mb-2" placeholder="Title">
+                        <input type="number" @bind="editingAd.Price" class="form-control mb-2" placeholder="Price">
+                        <input type="text" @bind="editingAd.Location" class="form-control mb-2" placeholder="Location">
+                        <input type="text" @bind="editingAd.Category" class="form-control mb-2" placeholder="Category">
+                        <input type="text" @bind="editingAd.ImageUrl" class="form-control mb-2" placeholder="Image URL">
+                        <input type="text" @bind="editingAd.Status" class="form-control mb-2" placeholder="Status">
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" @onclick="() => SaveAd(editingAd)">Save</button>
+                        <button class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 
 @code {
     private bool isLoggedIn = false;
@@ -84,33 +111,39 @@ else
             username = await LocalStorage.GetItemAsync<string>("username") ?? "Default User";
             busyDisplayStyle = "block"; // Show busy indicator
             var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
-            activeAds = allAds?.Where(ad => ad.SellerUserName == username && ad.Status != "Sold").ToArray() ?? new Ad[0];
-            soldAds = allAds?.Where(ad => ad.SellerUserName == username && ad.Status == "Sold").ToArray() ?? new Ad[0];
+            activeAds = allAds?.Where(ad => ad.SellerUserName == username).ToArray() ?? new Ad[0];
+            reservedAds = allAds?.Where(ad => ad.BuyerUserName == username).ToArray() ?? new Ad[0];
             busyDisplayStyle = "none"; // Hide busy indicator
-}
-else
-{
-activeAds = new Ad[0];
-soldAds = new Ad[0];
-}
-}
+        }     
+    else
+      {
+      activeAds = new Ad[0];
+      soldAds = new Ad[0];
+      }
+    }
+          
+    private void CreateAd()
+    {
+        NavigationManager.NavigateTo("/create");
+    }
+              
+     private async Task ApprovePurchase(Ad ad)
+     {
+    ad.BuyerUserName = isLoggedIn ? username : "Guest"; // Set BuyerUserName based on login status
 
-private void CreateAd()
-{
-NavigationManager.NavigateTo("/create");
-}
-  
-   private void EditAd(Ad ad)
+    var response = await Http.PostAsJsonAsync<Ad>($"{serverUrl}/api/eaagenbrug/approve", ad);
+    
+    var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
+    activeAds = allAds?.Where(ad => ad.SellerUserName == username && ad.Status != "Sold").ToArray() ?? new Ad[0];
+    soldAds = allAds?.Where(ad => ad.SellerUserName == username && ad.Status == "Sold").ToArray() ?? new Ad[0];
+    }
+
+    private void EditAd(Ad ad)
     {
         editingAd = ad; // Open the modal with the ad details
     }
 
-private void Purchasedads()
-{
-NavigationManager.NavigateTo("/purchasedads");
-}
-  
-   private async Task SaveAd(Ad ad)
+    private async Task SaveAd(Ad ad)
     {
         try
         {
@@ -136,23 +169,4 @@ NavigationManager.NavigateTo("/purchasedads");
     {
         editingAd = null; // Close the modal
     }
-}
-
-
-private async Task ApprovePurchase(Ad ad)
-{
-    ad.BuyerUserName = isLoggedIn ? username : "Guest"; // Set BuyerUserName based on login status
-
-    var response = await Http.PostAsJsonAsync<Ad>($"{serverUrl}/api/eaagenbrug/approve", ad);
-    
-    var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
-    activeAds = allAds?.Where(ad => ad.SellerUserName == username && ad.Status != "Sold").ToArray() ?? new Ad[0];
-    soldAds = allAds?.Where(ad => ad.SellerUserName == username && ad.Status == "Sold").ToArray() ?? new Ad[0];
-}
-  
-// adresse på server
-private string serverUrl = "https://localhost:7189";
-private Ad[]? activeAds = new Ad[0];
-private Ad[]? soldAds = new Ad[0];
-private string busyDisplayStyle = "none"; 
 }
