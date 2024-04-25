@@ -13,17 +13,12 @@
                 <InputText id="Title" @bind-Value="_Ad.Title" class="form-control"/>
         </div>
 
-        <div class="col-md-12 mb-3">
-            <label for="Description">Description</label>
-            <InputTextArea id="Description" @bind-Value="_Ad.Description" class="form-control" />
-        </div>
-
         <div class="col-md-6 mb-3">
             <label for="Price">Price</label>
-                <InputNumber id="Price" @bind-Value="_Ad.Price" class="form-control"/>
-        </div>
+            <InputNumber id="Price" @bind-Value="_Ad.Price" class="form-control"/>
+        </div>        
 
-        <div class="col-md-12 mb-3">
+        <div class="col-md-6 mb-3">
             <label for="Location">Location</label>
                 <InputSelect @bind-Value="_Ad.Location" class="form-control">
                     <option value="Genbrug Sønderhøj 30">Genbrug Sønderhøj 30</option>
@@ -33,14 +28,23 @@
                 </InputSelect>
         </div>
 
-        <div class="col-md-6 mb-3">
-            <label for="ImageUrl">Image URL</label>
-            <InputText id="ImageUrl" @bind-Value="_Ad.ImageUrl" class="form-control" />
+        <div class="col-md-12 mb-3">
+            <label for="Description">Description</label>
+            <InputTextArea id="Description" @bind-Value="_Ad.Description" class="form-control"/>
         </div>
 
         <div class="col-md-6 mb-3">
-                <label for="Category">Category</label>
-                    <InputText id="Category" @bind-Value="_Ad.Category" class="form-control"/>
+            <label for="Category">Category</label>
+            <InputSelect @bind-Value="_Ad.Category" class="form-control">
+                <option value="IT-Udstyr">IT-Udstyr</option>
+                <option value="Bøger">Bøger</option>
+                <option value="Tøj">Tøj</option>
+            </InputSelect>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label for="ImageUrl">Image URL</label>
+            <InputText id="ImageUrl" @bind-Value="_Ad.ImageUrl" class="form-control"/>
         </div>
 
         <div class="col-md-12 mb-3">
