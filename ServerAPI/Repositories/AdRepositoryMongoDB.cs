@@ -43,6 +43,7 @@ namespace ServerAPI.Repositories
 
         }
 
+
         public void AddItem(Ad ad)
         {
             var max = 0;
@@ -78,6 +79,7 @@ namespace ServerAPI.Repositories
         }
 
         public void UpdateItem(Ad ad)
+
         {
             var updateDef = Builders<Ad>.Update
                 .Set(x => x.Description, ad.Description)

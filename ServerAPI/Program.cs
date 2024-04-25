@@ -22,7 +22,7 @@ namespace ServerAPI1
                 builder.Configuration["MongoDB:DatabaseName"]
             ));
             builder.Services.AddSingleton<IAdRepository, AdRepositoryMongoDB>();
-            builder.Services.AddScoped<UserRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>(); 
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
 
