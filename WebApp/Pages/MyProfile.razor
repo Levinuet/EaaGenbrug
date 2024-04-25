@@ -25,7 +25,7 @@
             <p class="card-text">Price: @ad.Price.ToString("C")</p>
             <p class="card-text">Location: @ad.Location</p>
             <p class="card-text">Category: @ad.Category</p>
-            <p class="card-status-r">@ad.Status</p>
+            <p class="@(ad.Status == "Reserved" ? "card-status-r" : "")">@ad.Status</p>
         @if (ad.Status == "Reserved")
         {
         <button class="btn btn-success sold-btn" @onclick="() => ApprovePurchase(ad)">Mark as Sold</button>
