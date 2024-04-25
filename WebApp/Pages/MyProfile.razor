@@ -8,122 +8,137 @@
 
 @if (isLoggedIn)
 {
-    <p>Velkommen til din side, @username! Her kan du se dine aktive annoncer og dine tidligere k�b samt svare p� k�bsanmodninger</p>
+<p>Velkommen til din side, @username! Her kan du se dine aktive annoncer og dine tidligere køb samt svare på købsanmodninger</p>
 
-    <button class="btn btn-primary" @onclick="CreateAd">Opret annonce</button>
+<button class="btn btn-primary" @onclick="CreateAd">Opret annonce</button>
 
 
-    <h2>Mine Annoncer</h2>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Price</th>
-                <th>Location</th>
-                <th>Category</th>
-                <th>Image</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var ad in activeAds)
-            {
-                <tr>
-                    <td>@ad.Title</td>
-                    <td>@ad.Price</td>
-                    <td>@ad.Location</td>
-                    <td>@ad.Category</td>
-                    <td><img src="@ad.ImageUrl" alt="Item Image" style="height:50px;" /></td>
-                    <td>@ad.Status</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+<h2>Mine Annoncer</h2>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Price</th>
+        <th>Location</th>
+        <th>Category</th>
+        <th>Image</th>
+        <th>Status</th>
+        <td>Approve purchase</td>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var ad in activeAds)
+    {
+    <tr>
+        <td>@ad.Title</td>
+        <td>@ad.Price</td>
+        <td>@ad.Location</td>
+        <td>@ad.Category</td>
+        <td><img src="@ad.ImageUrl" alt="Item Image" style="height:50px;" /></td>
+        <td>@ad.Status</td>
+        @if (ad.Status == "Reserved")
+        {
+        <button class="btn btn-success sold-btn" @onclick="() => ApprovePurchase(ad)">Mark as Sold</button>
+        }
+    </tr>
+    }
+    </tbody>
+</table>
 
-    <h2>Mine K�b</h2>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Price</th>
-                <th>Location</th>
-                <th>Category</th>
-                <th>Image</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var ad in reservedAds)
-            {
-                <tr>
-                    <td>@ad.Title</td>
-                    <td>@ad.Price</td>
-                    <td>@ad.Location</td>
-                    <td>@ad.Category</td>
-                    <td><img src="@ad.ImageUrl" alt="Item Image" style="height:50px;" /></td>
-                    <td>@ad.Status</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+<h2>Solgte produkter</h2>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Price</th>
+        <th>Location</th>
+        <th>Category</th>
+        <th>Image</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var ad in soldAds)
+    {
+    <tr>
+        <td>@ad.Title</td>
+        <td>@ad.Price</td>
+        <td>@ad.Location</td>
+        <td>@ad.Category</td>
+        <td><img src="@ad.ImageUrl" alt="Item Image" style="height:50px;" /></td>
+        <td>@ad.Status</td>
+    </tr>
+    }
+    </tbody>
+</table>
 }
 else
 {
-    <p>Du er ikke logget ind <a href="/login">Klik her for at logge ind</a>.</p>
+<p>Du er ikke logget ind <a href="/login">Klik her for at logge ind</a>.</p>
 }
 <img src="busy.gif" style="display:@busyDisplayStyle" />
 
 @code {
-    private bool isLoggedIn = false;
-    private string username = "Default User";
-    private string ads = "No ads listed.";
-    private string purchases = "No purchases made.";
+private bool isLoggedIn = false;
+private string username = "Default User";
+private string ads = "No ads listed.";
+private string purchases = "No purchases made.";
 
 
-    protected override async Task OnInitializedAsync()
-    {
-        var isLoggedInStr = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "isLoggedIn");
-        isLoggedIn = isLoggedInStr != null && isLoggedInStr.Equals("true", StringComparison.OrdinalIgnoreCase);
+protected override async Task OnInitializedAsync()
+{
+var isLoggedInStr = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "isLoggedIn");
+isLoggedIn = isLoggedInStr != null && isLoggedInStr.Equals("true", StringComparison.OrdinalIgnoreCase);
 
-        if (isLoggedIn)
-        {
-            username = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "username") ?? "Default User";
-
-            // Show busy indicator
-            busyDisplayStyle = "block";
-
-            // Fetch all ads
-            var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
-
-            // Split ads into active and reserved
-            activeAds = allAds?.Where(ad => ad.SellerUserName == username).ToArray() ?? new Ad[0];
-            reservedAds = allAds?.Where(ad => ad.BuyerUserName == username).ToArray() ?? new Ad[0];
-
-            // Hide busy indicator
-            busyDisplayStyle = "none";
-        }
-        else
-        {
-            activeAds = new Ad[0];
-            reservedAds = new Ad[0];
-        }
-    }
-
-    private void CreateAd()
-    {
-        NavigationManager.NavigateTo("/create");
-    }
-
-    // container for listen
-    private Ad[]? shoppingList = new Ad[0];
-
-    // adresse p� server
-    private string serverUrl = "https://localhost:7189";
+if (isLoggedIn)
+{
+username = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "username") ?? "Default User";
 
 
-    private Ad[]? activeAds = new Ad[0];
-    private Ad[]? reservedAds = new Ad[0];
 
 
-    private string busyDisplayStyle = "none";
-    }
+
+// Show busy indicator
+busyDisplayStyle = "block";
+
+// Fetch all ads
+var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
+
+// Split ads into active and reserved
+activeAds = allAds?.Where(ad => ad.SellerUserName == username && ad.Status != "Sold").ToArray() ?? new Ad[0];
+soldAds = allAds?.Where(ad => ad.SellerUserName == username && ad.Status == "Sold").ToArray() ?? new Ad[0];
+
+// Hide busy indicator
+busyDisplayStyle = "none";
+}
+else
+{
+activeAds = new Ad[0];
+soldAds = new Ad[0];
+}
+}
+
+private void CreateAd()
+{
+NavigationManager.NavigateTo("/create");
+}
+private async Task ApprovePurchase(Ad ad)
+{
+    ad.BuyerUserName = isLoggedIn ? username : "Guest"; // Set BuyerUserName based on login status
+
+    var response = await Http.PostAsJsonAsync<Ad>($"{serverUrl}/api/eaagenbrug/approve", ad);
+    
+    var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
+    activeAds = allAds?.Where(ad => ad.SellerUserName == username && ad.Status != "Sold").ToArray() ?? new Ad[0];
+    soldAds = allAds?.Where(ad => ad.SellerUserName == username && ad.Status == "Sold").ToArray() ?? new Ad[0];
+}
+// adresse på server
+private string serverUrl = "https://localhost:7189";
+
+
+private Ad[]? activeAds = new Ad[0];
+private Ad[]? soldAds = new Ad[0];
+
+
+private string busyDisplayStyle = "none";
+}

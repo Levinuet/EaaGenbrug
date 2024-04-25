@@ -28,7 +28,7 @@ namespace HelloBlazor.Server.Controllers
         [Route("add")]
         public void AddItem(Ad product)
         {
-            mRepo.AddItem(product);
+            mRepo.AddAd(product);
         }
 
         [HttpDelete]
@@ -48,6 +48,13 @@ namespace HelloBlazor.Server.Controllers
         public async Task<IActionResult> PurchaseAd([FromBody] Ad ad)
         {
             mRepo.PurchaseAd(ad);
+            return Ok();
+
+        }
+        [HttpPost("approve")]
+        public async Task<IActionResult> ApproveAd([FromBody] Ad ad)
+        {
+            mRepo.ApproveAd(ad);
             return Ok();
 
         }

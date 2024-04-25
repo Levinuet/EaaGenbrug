@@ -1,0 +1,31 @@
+/* buttonStyles.css */
+.sold-btn {
+    background-color: #007BFF; /* Skarp blå farve */
+    color: white;
+    border: none;
+    padding: 22px 24px; /* Øget polstring for en større knap */
+    font-size: 16px; /* Større skriftstørrelse for bedre læsbarhed */
+    border-radius: 5px; /* Afrunding af hjørner for et blødere udseende */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16); /* Mere udtalt skygge for et løftet udseende */
+}
+
+.sold-btn:hover {
+    background-color: #0056b3; /* En mørkere nuance af blå ved hover */
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); /* Større og blødere skygge ved hover */
+    transform: translateY(-2px); /* Løfter knappen en anelse ved hover */
+}
+
+.sold-btn:active {
+    background-color: #004085; /* Endnu mørkere blå ved aktivering */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Lavere skygge for at simulere tryk */
+    transform: translateY(1px); /* Nedadgående forskydning ved klik */
+}
+
+@media (max-width: 768px) {
+    .sold-btn {
+        padding: 10px 20px; /* Mindre polstring på mobile enheder */
+        font-size: 14px; /* Mindre skriftstørrelse på mobile enheder */
+    }
+}
