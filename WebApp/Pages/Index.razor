@@ -54,7 +54,7 @@
     private List<Ad> AllAds = new List<Ad>();
     private List<Ad> DisplayedAds = new List<Ad>();
     private bool firstRender = true;
-
+    private string busyDisplayStyle = "none";
 
     protected override void OnInitialized()
     {
@@ -75,16 +75,9 @@
         }
     }
 
-
-    private void FilterAds(ChangeEventArgs e)
-
-    private string busyDisplayStyle = "none";
-
-    protected override async Task OnInitializedAsync()
-
-    {
-        string selectedCategory = e?.Value?.ToString() ?? "";
-        UpdateDisplayedAds(selectedCategory);
+    private void FilterAds(ChangeEventArgs e) 
+    { 
+        string selectedCategory = e?.Value?.ToString() ?? ""; UpdateDisplayedAds(selectedCategory); 
     }
 
     private void UpdateDisplayedAds(string category)
@@ -97,24 +90,25 @@
         {
             DisplayedAds = AllAds.Where(ad => ad.Category.Equals(category)).ToList();
         }
+    }
 
     private async Task FetchUserDetails()
-   {
-       try
-       {
-           isLoggedIn = await LocalStorage.GetItemAsync<bool>("isLoggedIn");
+    {
+        try
+        {
+            isLoggedIn = await LocalStorage.GetItemAsync<bool>("isLoggedIn");
 
-               if (isLoggedIn)
-               {
-                   username = await LocalStorage.GetItemAsync<string>("username") ?? "Default User";
-               }
-       }
-           catch (Exception ex)
-           {
-               // Handle exception if needed
-               Console.WriteLine($"Error fetching user details: {ex.Message}");
-           }
-   }
+            if (isLoggedIn)
+            {
+                username = await LocalStorage.GetItemAsync<string>("username") ?? "Default User";
+            }
+        }
+        catch (Exception ex)
+        {
+            // Handle exception if needed
+            Console.WriteLine($"Error fetching user details: {ex.Message}");
+        }
+    }
 
     private async Task FetchAds()
     {
@@ -138,12 +132,6 @@
             AllAds.Clear();
         }
     }
-
-    private async Task PurchaseItem(Ad ad)
-    {
-
-        ad.BuyerUserName = isLoggedIn ? username : "Guest"; // Set BuyerUserName based on login status
-
 
     public async Task PurchaseItem(Ad ad)
     {
