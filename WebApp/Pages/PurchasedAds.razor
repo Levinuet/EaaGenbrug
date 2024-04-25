@@ -4,12 +4,12 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject NavigationManager NavigationManager
 
-<button class="btn btn-primary" @onclick="BackToMyProfile">Tilbage til Min Profil</button>
+<button class="btn btn-primary" @onclick="BackToMyProfile">Back to "My Profile"</button>
 
 @if (purchasedAds != null && purchasedAds.Any())
     {
         <div class="purchased-products">
-            <h2>Mine Købte Produkter</h2>
+            <h2>My purchases</h2>
             @foreach (var ad in purchasedAds)
             {
                 <div class="card">
@@ -27,7 +27,7 @@
     }
 else
     {
-        <p>Ingen købte varer at vise.</p>
+        <p>You have no previous purchases.</p>
     }
 
 @code {
@@ -53,7 +53,7 @@ else
         if (isLoggedIn)
         {
             username = await LocalStorage.GetItemAsync<string>("username") ?? "Default User";
-            busyDisplayStyle = "block"; // Show busy indicator
+            busyDisplayStyle = "block";
         }
     }
 
@@ -63,7 +63,7 @@ else
         {
             var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
             purchasedAds = allAds?.Where(ad => ad.BuyerUserName == username && ad.Status == "Sold").ToArray() ?? new Ad[0];
-            busyDisplayStyle = "none"; // Hide busy indicator
+            busyDisplayStyle = "none";
         }
         catch (Exception ex)
         {

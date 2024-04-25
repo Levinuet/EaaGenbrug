@@ -4,8 +4,6 @@
 @inject HttpClient Http
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
-<h1 class="mb-3">Tilgængelige Annoncer</h1>
-
 <div class="col-md-6 mb-3">
     <label for="FilterCategory">Filter by Category</label>
     <select @onchange="FilterAds" class="form-control">
@@ -23,7 +21,6 @@
     }
     else
     {
-
         foreach (var ad in DisplayedAds)
         {
             <div class="card">
@@ -38,7 +35,7 @@
                     <p>Seller: @ad.SellerUserName</p>
                     @if (isLoggedIn)
                     {
-                                    <button class="btn btn-primary" @onclick="() => PurchaseItem(ad)">Buy Now</button>
+                        <button class="btn btn-primary" @onclick="() => PurchaseItem(ad)">Buy Now</button>
                     }
                 </div>
             </div>
