@@ -17,7 +17,7 @@
     }
     else
     {
-        @foreach (var ad in activeAds)
+        foreach (var ad in activeAds)
         {
                     <div class="card">
                         <h5 class="card-title">@ad.Title</h5>
@@ -29,12 +29,16 @@
                             <p>Status: @ad.Status</p>
                             <p>Description: @ad.Description</p>
                             <p>Seller: @ad.SellerUserName</p>
-                            <button class="btn btn-primary" @onclick="() => PurchaseItem(ad)">Buy Now</button>
+                    @if (isLoggedIn)
+                    {
+                                    <button class="btn btn-primary" @onclick="() => PurchaseItem(ad)">Buy Now</button>
+                    }
                         </div>
                     </div>
         }
     }
 </div>
+
 
 @code {
     private Ad[]? eaagenbrug;
