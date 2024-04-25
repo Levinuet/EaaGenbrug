@@ -1,7 +1,6 @@
 @page "/PurchasedAds"
 @using Core.Model
 @inject HttpClient Http
-@inject IJSRuntime JSRuntime
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject NavigationManager NavigationManager
 
@@ -17,9 +16,9 @@
                     <div class="card-body">
                         <h5 class="card-title">@ad.Title</h5>
                         <img class="card-img" src="@ad.ImageUrl" alt="@ad.Title Image" style="height: 100px;">
-                        <p class="card-text">Pris: @ad.Price.ToString("C")</p>
-                        <p class="card-text">Lokation: @ad.Location</p>
-                        <p class="card-text">Kategori: @ad.Category</p>
+                        <p class="card-text">Price: @ad.Price.ToString("C")</p>
+                        <p class="card-text">Location: @ad.Location</p>
+                        <p class="card-text">Category: @ad.Category</p>
                         <p class="card-status">@ad.Status</p>
                     </div>
                 </div>
@@ -33,7 +32,6 @@ else
 
 @code {
     private Ad[]? purchasedAds;
-    // adresse på server
     private string serverUrl = "https://localhost:7189";
     private string username = "Default User";
     private string busyDisplayStyle = "none";

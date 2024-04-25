@@ -3,7 +3,6 @@
     @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
     @inject HttpClient Http;
 
-
     <EditForm EditContext="@aEditContext" class="row p-3" OnValidSubmit="@HandleValidSubmit">
         <DataAnnotationsValidator/>
         <ValidationSummary/>
@@ -20,7 +19,7 @@
 
         <div class="col-md-6 mb-3">
             <label for="Location">Location</label>
-                    <InputSelect @bind-Value="_Ad.Location" class="form-control" placeholder="Search...">
+                <InputSelect @bind-Value="_Ad.Location" class="form-control" placeholder="Search...">
                     <option value="Genbrug Sønderhøj 30">Genbrug Sønderhøj 30</option>
                     <option value="Genbrug Sønderhøj 7G">Genbrug Sønderhøj 7G</option>
                     <option value="Genbrug Guldbygning">Genbrug Guldbygning</option>
@@ -68,7 +67,7 @@
         private EditContext? aEditContext;
         private string serverUrl = "https://localhost:7189";
 
-        //Container for listen
+        //Container for the list
         private Ad[]? shoppingList = new Ad[0];
 
         protected override void OnInitialized()

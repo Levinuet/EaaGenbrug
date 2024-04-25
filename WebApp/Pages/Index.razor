@@ -50,19 +50,12 @@
 @code {
     private string serverUrl = "https://localhost:7189";
     private string username = "Default User";
+    private string busyDisplayStyle = "none";
     private bool isLoggedIn = false;
+    private bool firstRender = true;
+    private Ad[]? activeAds = new Ad[0];
     private List<Ad> AllAds = new List<Ad>();
     private List<Ad> DisplayedAds = new List<Ad>();
-    private bool firstRender = true;
-    private string busyDisplayStyle = "none";
-
-    protected override void OnInitialized()
-    {
-        // Execute non-JavaScript operations here
-    }
-
-    private Ad[]? activeAds = new Ad[0];
-
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -97,7 +90,6 @@
         try
         {
             isLoggedIn = await LocalStorage.GetItemAsync<bool>("isLoggedIn");
-
             if (isLoggedIn)
             {
                 username = await LocalStorage.GetItemAsync<string>("username") ?? "Default User";
