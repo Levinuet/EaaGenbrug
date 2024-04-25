@@ -1,0 +1,71 @@
+@page "/register"
+@inject NavigationManager NavigationManager
+@inject IHttpClientFactory HttpClientFactory
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@using Core.Model
+
+<h3>Register</h3>
+
+<EditForm Model="@user" OnValidSubmit="HandleRegister">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <!-- Username input -->
+    <div class="form-group">
+        <label for="username">Username:</label>
+        <InputText id="username" class="form-control" @bind-Value="user.Username" />
+    </div>
+
+    <!-- Email input -->
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <InputText id="email" class="form-control" @bind-Value="user.Email" />
+    </div>
+
+    <!-- Password input -->
+    <div class="form-group">
+        <label for="password">Password:</label>
+        <InputText id="password" type="password" class="form-control" @bind-Value="user.Password" />
+    </div>
+
+    <!-- Submit button for registration -->
+    <button type="submit" class="btn btn-primary">Register</button>
+</EditForm>
+
+@code {
+    private User user = new User();
+    private string errorMessage = "";
+    private HttpClient http;
+
+    protected override void OnInitialized()
+    {
+        http = HttpClientFactory.CreateClient("MyClient");
+    }
+
+    private async Task HandleRegister()
+    {
+        var registerDto = new RegisterDto { Username = user.Username, Password = user.Password, Email = user.Email };
+        var response = await http.PostAsJsonAsync("https://localhost:7189/user/register", registerDto);
+
+        if (response.IsSuccessStatusCode)
+        {
+            await LocalStorage.SetItemAsync("isLoggedIn", true);
+            await LocalStorage.SetItemAsync("username", user.Username);
+            NavigationManager.NavigateTo("/myprofile", true);
+        }
+        else
+        {
+            errorMessage = await response.Content.ReadAsStringAsync();
+            StateHasChanged();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var loggedIn = await LocalStorage.GetItemAsync<bool>("isLoggedIn");
+        if (loggedIn)
+        {
+            NavigationManager.NavigateTo("/myprofile", true);
+        }
+    }
+}

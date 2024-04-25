@@ -1,34 +1,32 @@
 @page "/login"
-@inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
 @inject IHttpClientFactory HttpClientFactory
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @using Core.Model
 
-<h3>@(isRegistering ? "Register" : "Login")</h3>
+<h3>Login</h3>
 
-    <EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
+<EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
 
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <InputText id="username" class="form-control" @bind-Value="loginModel.Username" />
-        </div>
-        <div class="form-group">
-            <label for="password">Password l:</label>
-            <InputText id="password" type="password" class="form-control" @bind-Value="loginModel.Password" />
-        </div>
+    <div class="form-group">
+        <label for="username">Username:</label>
+        <InputText id="username" class="form-control" @bind-Value="loginModel.Username" />
+    </div>
+    <div class="form-group">
+        <label for="password">Password:</label>
+        <InputText id="password" type="password" class="form-control" @bind-Value="loginModel.Password" />
+    </div>
 
-        <button type="submit" class="btn btn-primary">Login</button>
-    </EditForm>
+    <button type="submit" class="btn btn-primary">Login</button>
+</EditForm>
 
 @code {
-    private User user = new User();
-    private LoginModel loginModel = new LoginModel();
+    private LoginDto loginModel = new LoginDto();
     private bool isRegistering = true;
     private string errorMessage = "";
     private HttpClient http;
-    private bool isFirstRender = true;
 
     protected override void OnInitialized()
     {
@@ -37,41 +35,13 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && isFirstRender)
+        if (firstRender)
         {
-            isFirstRender = false;
-            try
+            var loggedIn = await LocalStorage.GetItemAsync<bool>("isLoggedIn");
+            if (loggedIn)
             {
-                // Attempt to fetch the item and handle null or non-boolean values gracefully
-                var isLoggedInString = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "isLoggedIn");
-                var loggedIn = isLoggedInString == "true";  // This will safely handle null, "true", and "false"
-                if (loggedIn)
-                {
-                    NavigationManager.NavigateTo("/myprofile");
-                }
+                NavigationManager.NavigateTo("/myprofile", true);
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error during JS interop: {ex.Message}");
-                // Log or handle errors gracefully here
-            }
-        }
-    }
-
-
-    private async Task HandleRegister()
-    {
-        var registerDto = new RegisterDto { Username = user.Username, Password = user.Password, Email = user.Email };
-        var response = await http.PostAsJsonAsync("https://localhost:7189/user/register", registerDto);
-
-        if (response.IsSuccessStatusCode)
-        {
-            NavigationManager.NavigateTo("/myprofile");
-        }
-        else
-        {
-            errorMessage = await response.Content.ReadAsStringAsync();
-            StateHasChanged();
         }
     }
 
@@ -80,9 +50,9 @@
         var response = await http.PostAsJsonAsync("https://localhost:7189/user/login", loginModel);
         if (response.IsSuccessStatusCode)
         {
-            await JSRuntime.InvokeVoidAsync("localStorage.setItem", "isLoggedIn", "true");
-            await JSRuntime.InvokeVoidAsync("localStorage.setItem", "username", loginModel.Username);
-            NavigationManager.NavigateTo("/myprofile");
+            await LocalStorage.SetItemAsync("isLoggedIn", true);
+            await LocalStorage.SetItemAsync("username", loginModel.Username);
+            NavigationManager.NavigateTo("/myprofile", true);
         }
         else
         {

@@ -1,6 +1,6 @@
 ﻿    @page "/create"
     @using Core.Model;
-    @inject IJSRuntime JSRuntime
+    @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
     @inject HttpClient Http;
 
 
@@ -76,23 +76,21 @@
             aEditContext = new EditContext(_Ad);
         }
 
-        protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
+    {
+        try
         {
-            try
+            isLoggedIn = await LocalStorage.GetItemAsync<bool>("isLoggedIn");
+            if (isLoggedIn)
             {
-                var isLoggedInStr = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "isLoggedIn");
-                isLoggedIn = isLoggedInStr != null && isLoggedInStr.Equals("true", StringComparison.OrdinalIgnoreCase);
-
-                if (isLoggedIn)
-                {
-                    username = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "username") ?? "Default User";
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error during initialization: " + ex.Message);
+                username = await LocalStorage.GetItemAsync<string>("username") ?? "Default User";
             }
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error during initialization: " + ex.Message);
+        }
+    }
 
 
         public async Task HandleValidSubmit()

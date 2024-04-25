@@ -2,7 +2,7 @@
 @using Core.Model
 @using ServerAPI.Repositories
 @inject HttpClient Http
-@inject IJSRuntime JSRuntime
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage 
 
 <h1 class="mb-3">Tilgængelige Annoncer</h1>
 
@@ -52,27 +52,24 @@
  
     protected override async Task OnInitializedAsync()
     {
-            await FetchUserDetails();
-            await FetchAds();
+        await FetchUserDetails();
+        await FetchAds();
     }
 
     private async Task FetchUserDetails()
     {
         try
         {
-            var isLoggedInStr = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "isLoggedIn");
-            isLoggedIn = isLoggedInStr != null && isLoggedInStr.Equals("true", StringComparison.OrdinalIgnoreCase);
-
-            if (isLoggedIn)
-            {
-                username = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "username") ?? "Default User";
-            }
+            isLoggedIn = await LocalStorage.GetItemAsync<bool>("isLoggedIn");
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Error fetching user details: " + ex.Message);
+            // Handle exception if needed
+            Console.WriteLine($"Error fetching user details: {ex.Message}");
         }
     }
+
+
 
     private async Task FetchAds()
     {

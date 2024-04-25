@@ -14,9 +14,7 @@ namespace ServerAPI.Repositories
         {
             var password = "XdWOg0DZEhGTpzuX";
             var mongoUri = $"mongodb+srv://eaa23rao:{password}@shopping.dujfobz.mongodb.net/?retryWrites=true&w=majority";
-
-
-
+            
             try
             {
                 client = new MongoClient(mongoUri);
@@ -40,9 +38,8 @@ namespace ServerAPI.Repositories
 
             collection = client.GetDatabase(dbName)
                .GetCollection<Ad>(collectionName);
-
         }
-
+        
         public void AddAd(Ad ad)
         {
             var max = 0;
@@ -88,7 +85,7 @@ namespace ServerAPI.Repositories
             collection.UpdateOne(x => x.Id == ad.Id, updateDef);
         }
 
-        public void UpdateItem(Ad ad)
+        public void UpdateAd(Ad ad)
         {
             var updateDef = Builders<Ad>.Update
         .Set(x => x.Title, ad.Title)
@@ -101,4 +98,3 @@ namespace ServerAPI.Repositories
         }
     }
 }
-
