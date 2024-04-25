@@ -1,96 +1,125 @@
-﻿@page "/create"
-@using Core.Model;
-@inject HttpClient Http;
+﻿    @page "/create"
+    @using Core.Model;
+    @inject IJSRuntime JSRuntime
+    @inject HttpClient Http;
 
-<EditForm EditContext="@aEditContext" class="row p-3" OnValidSubmit="@HandleValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <div class="col-md-12 mb-3">
-        <label for="Title">Title</label>
-        <InputText id="Title" @bind-Value="_Ad.Title" class="form-control" />
-    </div>
-    <div class="col-md-6 mb-3">
-        <label for="Price">Price</label>
-        <InputNumber id="Price" @bind-Value="_Ad.Price" class="form-control" />
-    </div>
-    <div class="col-md-6 mb-3">
-        <label for="Location">Location</label>
-        <InputText id="Location" @bind-Value="_Ad.Location" class="form-control" />
-    </div>
 
-    <div class="col-md-12 mb-3">
-        <label for="Description">Description</label>
-        <InputTextArea id="Description" @bind-Value="_Ad.Description" class="form-control" />
-    </div>
-    <div class="col-md-6 mb-3">
-        <label for="Category">Category</label>
-        <InputText id="Category" @bind-Value="_Ad.Category" class="form-control" />
-    </div>
-    <div class="col-md-6 mb-3">
-        <label for="ImageUrl">Image URL</label>
-        <InputText id="ImageUrl" @bind-Value="_Ad.ImageUrl" class="form-control" />
-    </div>
-    <div class="col-md-12 mb-3">
-        <label for="Status">Status</label>
-        <InputSelect @bind-Value="_Ad.Status" class="form-control">
-            <option value="Select status">Select status</option>
-            <option value="Active">Active</option>
-            <option value="Reserved">Reserved</option>
-            <option value="Inactive">Inactive</option>
-        </InputSelect>
-    </div>
-    <div class="col-12 mb-3">
-        <button type="submit" class="btn btn-primary">Add</button>
-    </div>
-</EditForm>
+    <EditForm EditContext="@aEditContext" class="row p-3" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="col-md-12 mb-3">
+            <label for="Title">Title</label>
+            <InputText id="Title" @bind-Value="_Ad.Title" class="form-control" />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="Price">Price</label>
+            <InputNumber id="Price" @bind-Value="_Ad.Price" class="form-control" />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="Location">Location</label>
+            <InputText id="Location" @bind-Value="_Ad.Location" class="form-control" />
+        </div>
 
-@code {
-  
+        <div class="col-md-12 mb-3">
+            <label for="Description">Description</label>
+            <InputTextArea id="Description" @bind-Value="_Ad.Description" class="form-control" />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="Category">Category</label>
+            <InputText id="Category" @bind-Value="_Ad.Category" class="form-control" />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="ImageUrl">Image URL</label>
+            <InputText id="ImageUrl" @bind-Value="_Ad.ImageUrl" class="form-control" />
+        </div>
+    
 
-    private Ad _Ad = new Ad();
+        <div class="col-md-12 mb-3">
+            <label for="Status">Status</label>
+            <InputSelect @bind-Value="_Ad.Status" class="form-control">
+                <option value="Select status">Select status</option>
+                <option value="Active">Active</option>
+                <option value="Reserved">Reserved</option>
+                <option value="Inactive">Inactive</option>
+            </InputSelect>
+        </div>
+        <div class="col-12 mb-3">
+            <button type="submit" class="btn btn-primary">Add</button>
+        </div>
+    </EditForm>
+
+    @code {
+        private bool isLoggedIn = false;
+        private string username = "Default User";
+
+
+        private Ad _Ad = new Ad();
 
     
 
 
-    // kontekst for formen
-    private EditContext? aEditContext;
+        // kontekst for formen
+        private EditContext? aEditContext;
 
-    // adresse på server
-    private string serverUrl = "https://localhost:7189";
+        // adresse på server
+        private string serverUrl = "https://localhost:7189";
+        protected override void OnInitialized()
+        {
+            aEditContext = new EditContext(_Ad);
+        }
 
-    protected override void OnInitialized()
-    {
-        aEditContext = new EditContext(_Ad);
+        protected override async Task OnInitializedAsync()
+        {
+            try
+            {
+                var isLoggedInStr = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "isLoggedIn");
+                isLoggedIn = isLoggedInStr != null && isLoggedInStr.Equals("true", StringComparison.OrdinalIgnoreCase);
+
+                if (isLoggedIn)
+                {
+                    username = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "username") ?? "Default User";
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error during initialization: " + ex.Message);
+            }
+        }
+
+
+        public async Task HandleValidSubmit()
+        {
+
+            await AddShoppingItem();
+        }
+
+        private async Task AddShoppingItem()
+        {
+            _Ad.SellerUserName = username;  // Set the SellerUserName to the current username
+
+            await Http.PostAsJsonAsync<Ad>($"{serverUrl}/api/shopping/add", _Ad);
+            Console.WriteLine("Client: add " + _Ad.Title + " " + _Ad.Price + " " + _Ad.Location + " " + _Ad.Category + " " + _Ad.ImageUrl + " " + _Ad.SellerUserName);
+
+            shoppingList = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/shopping/getall");
+            _Ad = new Ad();  // Reset the Ad object to clear the form
+        }
+
+
+
+        // container for listen
+        private Ad[]? shoppingList = new Ad[0];
+
+        private async Task DeleteShoppingItem(Ad item)
+        {
+            await Http.DeleteAsync($"{serverUrl}/api/shopping/delete/{item.Id}");
+
+            shoppingList = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/shopping/getall");
+
+        }
+
+        private async Task UpdateShoppingItem(Ad item)
+        {
+            await Http.PutAsJsonAsync<Ad>($"{serverUrl}/api/shopping/update", item);
+        }
     }
-
-    public async Task HandleValidSubmit()
-    {
-        await AddShoppingItem();
-    }
-
-    private async Task AddShoppingItem()
-    {
-        await Http.PostAsJsonAsync<Ad>($"{serverUrl}/api/shopping/add", _Ad);
-        Console.WriteLine("Klient: add " + _Ad.Title + " " + _Ad.Price + " " + _Ad.Location + " " + _Ad.Category + " " + _Ad.ImageUrl + " " + _Ad.Status);
-        shoppingList = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/shopping/getall");
-        _Ad = new(); // clear fields in form
-
-    }
-
-    // container for listen
-    private Ad[]? shoppingList = new Ad[0];
-
-    private async Task DeleteShoppingItem(Ad item)
-    {
-        await Http.DeleteAsync($"{serverUrl}/api/shopping/delete/{item.Id}");
-
-        shoppingList = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/shopping/getall");
-
-    }
-
-    private async Task UpdateShoppingItem(Ad item)
-    {
-        await Http.PutAsJsonAsync<Ad>($"{serverUrl}/api/shopping/update", item);
-    }
-}
 

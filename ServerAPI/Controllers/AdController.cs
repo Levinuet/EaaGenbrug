@@ -45,10 +45,11 @@ namespace HelloBlazor.Server.Controllers
             mRepo.UpdateItem(product);
         }
         [HttpPost("purchase")]
-        public void PurchaseAd(Ad item)
+        public async Task<IActionResult> PurchaseAd([FromBody] Ad ad)
         {
-            mRepo.PurchaseAd(item);
-            
+            mRepo.PurchaseAd(ad);
+            return Ok();
+
         }
 
         
