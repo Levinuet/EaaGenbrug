@@ -93,7 +93,7 @@ else
             busyDisplayStyle = "block";
 
             // Fetch all ads
-            var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/shopping/getall");
+            var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
 
             // Split ads into active and reserved
             activeAds = allAds?.Where(ad => ad.Status == "Active").ToArray() ?? new Ad[0];

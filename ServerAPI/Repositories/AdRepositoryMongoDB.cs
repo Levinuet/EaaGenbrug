@@ -35,8 +35,8 @@ namespace ServerAPI.Repositories
             // Provide the name of the database and collection you want to use.
             // If they don't already exist, the driver and Atlas will create them
             // automatically when you first write data.
-            var dbName = "Shopping";
-            var collectionName = "items";
+            var dbName = "Eaagenbrug";
+            var collectionName = "Ads";
 
             collection = client.GetDatabase(dbName)
                .GetCollection<Ad>(collectionName);
