@@ -20,6 +20,16 @@
             <InputText id="Location" @bind-Value="_Ad.Location" class="form-control" />
         </div>
 
+    <div class="col-md-12 mb-3">
+        <label for="Location">Location</label>
+        <InputSelect @bind-Value="_Ad.Location" class="form-control">
+            <option value="Genbrug Sønderhøj 30">Genbrug Sønderhøj 30</option>
+            <option value="Genbrug Sønderhøj 7G">Genbrug Sønderhøj 7G</option>
+            <option value="Genbrug Guldbygning">Genbrug Guldbygning</option>
+            <option value="Hjemme ved Sælger">Hjemme ved Sælger</option>
+        </InputSelect>
+    </div>
+
         <div class="col-md-12 mb-3">
             <label for="Description">Description</label>
             <InputTextArea id="Description" @bind-Value="_Ad.Description" class="form-control" />
@@ -36,8 +46,7 @@
 
         <div class="col-md-12 mb-3">
             <label for="Status">Status</label>
-            <InputSelect @bind-Value="_Ad.Status" class="form-control">
-                <option value="Select status">Select status</option>
+            <InputSelect @bind-Value="_Ad.Status" class="form-control">           
                 <option value="Active">Active</option>
                 <option value="Reserved">Reserved</option>
                 <option value="Inactive">Inactive</option>
@@ -97,10 +106,10 @@
         {
             _Ad.SellerUserName = username;  // Set the SellerUserName to the current username
 
-            await Http.PostAsJsonAsync<Ad>($"{serverUrl}/api/shopping/add", _Ad);
+            await Http.PostAsJsonAsync<Ad>($"{serverUrl}/api/eaagenbrug/add", _Ad);
             Console.WriteLine("Client: add " + _Ad.Title + " " + _Ad.Price + " " + _Ad.Location + " " + _Ad.Category + " " + _Ad.ImageUrl + " " + _Ad.SellerUserName);
 
-            shoppingList = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/shopping/getall");
+            shoppingList = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
             _Ad = new Ad();  // Reset the Ad object to clear the form
         }
 
@@ -111,15 +120,15 @@
 
         private async Task DeleteShoppingItem(Ad item)
         {
-            await Http.DeleteAsync($"{serverUrl}/api/shopping/delete/{item.Id}");
+            await Http.DeleteAsync($"{serverUrl}/api/eaagenbrug/delete/{item.Id}");
 
-            shoppingList = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/shopping/getall");
+            shoppingList = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
 
         }
 
         private async Task UpdateShoppingItem(Ad item)
         {
-            await Http.PutAsJsonAsync<Ad>($"{serverUrl}/api/shopping/update", item);
+            await Http.PutAsJsonAsync<Ad>($"{serverUrl}/api/eaagenbrug/update", item);
         }
     }
 

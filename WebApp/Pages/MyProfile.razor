@@ -8,7 +8,7 @@
 
 @if (isLoggedIn)
 {
-    <p>Velkommen til din side, @username! Her kan du se dine aktive annoncer og dine tidligere køb samt svare på købsanmodninger</p>
+    <p>Velkommen til din side, @username! Her kan du se dine aktive annoncer og dine tidligere kÃ¸b samt svare pÃ¥ kÃ¸bsanmodninger</p>
 
     <button class="btn btn-primary" @onclick="CreateAd">Opret annonce</button>
 
@@ -40,7 +40,7 @@
         </tbody>
     </table>
 
-    <h2>Mine Køb</h2>
+    <h2>Mine KÃ¸b</h2>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -93,11 +93,11 @@ else
             busyDisplayStyle = "block";
 
             // Fetch all ads
-            var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/shopping/getall");
+            var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
 
             // Split ads into active and reserved
-            activeAds = allAds?.Where(ad => ad.Status == "Active").ToArray() ?? new Ad[0];
-            reservedAds = allAds?.Where(ad => ad.Status == "Reserved").ToArray() ?? new Ad[0];
+            activeAds = allAds?.Where(ad => ad.SellerUserName == username).ToArray() ?? new Ad[0];
+            reservedAds = allAds?.Where(ad => ad.BuyerUserName == username).ToArray() ?? new Ad[0];
 
             // Hide busy indicator
             busyDisplayStyle = "none";
@@ -117,7 +117,7 @@ else
     // container for listen
     private Ad[]? shoppingList = new Ad[0];
 
-    // adresse på server
+    // adresse pï¿½ server
     private string serverUrl = "https://localhost:7189";
 
 
