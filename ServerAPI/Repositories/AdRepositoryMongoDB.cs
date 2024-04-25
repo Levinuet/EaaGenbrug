@@ -68,8 +68,12 @@ namespace ServerAPI.Repositories
 
         public void PurchaseAd(Ad item)
         {
+
             var updateDef = Builders<Ad>.Update
-                .Set(x => x.Status, "Reserved");
+                .Set(x => x.Status, "Reserved")
+                  .Set(x => x.BuyerUserName, item.BuyerUserName);
+
+
             collection.UpdateOne(x => x.Id == item.Id, updateDef);
         }
 
