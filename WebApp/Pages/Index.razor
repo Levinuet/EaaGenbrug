@@ -65,13 +65,17 @@
         try
         {
             isLoggedIn = await LocalStorage.GetItemAsync<bool>("isLoggedIn");
+            if (isLoggedIn)
+            {
+                username = await LocalStorage.GetItemAsync<string>("username") ?? "Default User"; // Make sure this key matches what you've used to store the username
+            }
         }
         catch (Exception ex)
         {
-            // Handle exception if needed
             Console.WriteLine($"Error fetching user details: {ex.Message}");
         }
     }
+
 
 
 
@@ -91,6 +95,7 @@
 
     private async Task PurchaseItem(Ad ad)
     {
+
         ad.BuyerUserName = isLoggedIn ? username : "Guest"; // Set BuyerUserName based on login status
 
         var response = await Http.PostAsJsonAsync<Ad>($"{serverUrl}/api/eaagenbrug/purchase", ad);

@@ -65,21 +65,21 @@ namespace ServerAPI.Repositories
 
         public void PurchaseAd(Ad ad)
         {
+            if (ad.Status != "Reserved")
+            {
+                var updateDef = Builders<Ad>.Update
+            .Set(x => x.Status, "Reserved")
+            .Set(x => x.BuyerUserName, ad.BuyerUserName);
 
-            var updateDef = Builders<Ad>.Update
-                .Set(x => x.Status, "Reserved")
-                  .Set(x => x.BuyerUserName, ad.BuyerUserName);
-
-
-            collection.UpdateOne(x => x.Id == ad.Id, updateDef);
+                collection.UpdateOne(x => x.Id == ad.Id, updateDef);
+            }
         }
-        
         public void ApproveAd(Ad ad)
         {
 
             var updateDef = Builders<Ad>.Update
-                .Set(x => x.Status, "Sold")
-                .Set(x => x.BuyerUserName, ad.BuyerUserName);
+                .Set(x => x.Status, "Sold");
+ 
 
 
             collection.UpdateOne(x => x.Id == ad.Id, updateDef);
