@@ -20,7 +20,6 @@ namespace Core.Model
         public string Category { get; set; }
         [Required]
         public string Status { get; set; }
-        
         public string SellerUserName { get; set; }
         public string BuyerUserName { get; set; } = "";
     }

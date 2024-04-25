@@ -10,10 +10,9 @@ using static ServerAPI1.Program;
 [Route("[controller]")]
 public class UserController : ControllerBase
 {
-    private readonly IMongoDatabase _database;
     public IMongoCollection<User> Users => _database.GetCollection<User>("Users");
-
-    private readonly IUserRepository _userRepository;
+    private readonly IMongoDatabase _database;
+    private readonly IUserRepository _userRepository;    
 
     public UserController(IUserRepository userRepository)
     {
