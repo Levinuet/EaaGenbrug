@@ -1,0 +1,82 @@
+@page "/PurchasedAds"
+@using Core.Model
+@inject HttpClient Http
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+
+<button class="btn btn-primary" @onclick="BackToMyProfile">Tilbage til Min Profil</button>
+
+@if (purchasedAds != null && purchasedAds.Any())
+{
+    <div class="purchased-products">
+        <h2>Mine Købte Produkter</h2>
+        @foreach (var ad in purchasedAds)
+        {
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">@ad.Title</h5>
+                    <img class="card-img" src="@ad.ImageUrl" alt="@ad.Title Image" style="height: 100px;">
+                    <p class="card-text">Pris: @ad.Price.ToString("C")</p>
+                    <p class="card-text">Lokation: @ad.Location</p>
+                    <p class="card-text">Kategori: @ad.Category</p>
+                    <p class="card-status">@ad.Status</p>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>Ingen købte varer at vise.</p>
+}
+
+@code {
+    private Ad[]? purchasedAds;
+// adresse på server
+    private string serverUrl = "https://localhost:7189";
+    private string username = "Default User";
+    private bool isLoggedIn = false; // Login status
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await FetchUserDetails();
+        await FetchAds();
+    }
+    
+    private async Task FetchUserDetails()
+    {
+        try
+        {
+            var isLoggedInStr = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "isLoggedIn");
+            isLoggedIn = isLoggedInStr != null && isLoggedInStr.Equals("true", StringComparison.OrdinalIgnoreCase);
+
+            if (isLoggedIn)
+            {
+                username = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "username") ?? "Default User";
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error fetching user details: " + ex.Message);
+        }
+    }
+    
+    private async Task FetchAds()
+    {
+        try
+        {
+            var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
+            purchasedAds = allAds?.Where(ad => ad.BuyerUserName == username && ad.Status == "Sold").ToArray() ?? new Ad[0];
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Failed to load ads: {ex.Message}");
+            purchasedAds = Array.Empty<Ad>();
+        }
+    }
+    private void BackToMyProfile()
+    {
+        NavigationManager.NavigateTo("/myprofile");
+    }
+    
+}
