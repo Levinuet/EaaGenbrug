@@ -13,24 +13,22 @@
     <button class="btn btn-primary" @onclick="CreateAd">Opret annonce</button>
     <button class="btn btn-primary" @onclick="Purchasedads">Se tidligere køb</button>
 </div>
-
-<div class="ads-section">
     <h2>Mine Annoncer</h2>
+<div class="ads-container">
+    
         @foreach (var ad in activeAds)
         {
             <div class="card">
-            <div class="card-body">
             <h5 class="card-title">@ad.Title</h5>
             <img class="card-img" src="@ad.ImageUrl" alt="Item Image" style="height: 100px;">
             <p class="card-text">Price: @ad.Price.ToString("C")</p>
             <p class="card-text">Location: @ad.Location</p>
             <p class="card-text">Category: @ad.Category</p>
             <p class="@(ad.Status == "Reserved" ? "card-status-r" : "")">@ad.Status</p>
-        @if (ad.Status == "Reserved")
-        {
-        <button class="btn btn-success sold-btn" @onclick="() => ApprovePurchase(ad)">Mark as Sold</button>
-        }
-            </div>
+                @if (ad.Status == "Reserved")
+                    {
+                    <button class="btn btn-success sold-btn" @onclick="() => ApprovePurchase(ad)">Mark as Sold</button>
+                    }
             </div>
         }
 </div>
@@ -134,14 +132,13 @@ else
               
      private async Task ApprovePurchase(Ad ad)
      {
-    ad.BuyerUserName = isLoggedIn ? username : "Guest"; // Set BuyerUserName based on login status
+        ad.BuyerUserName = isLoggedIn ? username : "Guest"; // Set BuyerUserName based on login status
 
-    var response = await Http.PostAsJsonAsync<Ad>($"{serverUrl}/api/eaagenbrug/approve", ad);
-    
-    var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
-    activeAds = allAds?.Where(ad => ad.SellerUserName == username && ad.Status != "Sold").ToArray() ?? new Ad[0];
-    soldAds = allAds?.Where(ad => ad.SellerUserName == username && ad.Status == "Sold").ToArray() ?? new Ad[0];
-    }
+        var response = await Http.PostAsJsonAsync<Ad>($"{serverUrl}/api/eaagenbrug/approve", ad);
+        var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
+        activeAds = allAds?.Where(ad => ad.SellerUserName == username && ad.Status != "Sold").ToArray() ?? new Ad[0];
+        soldAds = allAds?.Where(ad => ad.SellerUserName == username && ad.Status == "Sold").ToArray() ?? new Ad[0];
+     }
 
     private void EditAd(Ad ad)
     {

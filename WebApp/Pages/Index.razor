@@ -49,11 +49,11 @@
 
 
     private Ad[]? activeAds = new Ad[0];
-   
+
 
 
     private string busyDisplayStyle = "none";
- 
+
     protected override async Task OnInitializedAsync()
     {
         await FetchUserDetails();
@@ -65,19 +65,18 @@
         try
         {
             isLoggedIn = await LocalStorage.GetItemAsync<bool>("isLoggedIn");
-            if (isLoggedIn)
+
+                if (isLoggedIn)
+                {
+                    username = await LocalStorage.GetItemAsync<string>("username") ?? "Default User";
+                }
+        }
+            catch (Exception ex)
             {
-                username = await LocalStorage.GetItemAsync<string>("username") ?? "Default User"; // Make sure this key matches what you've used to store the username
+                // Handle exception if needed
+                Console.WriteLine($"Error fetching user details: {ex.Message}");
             }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error fetching user details: {ex.Message}");
-        }
     }
-
-
-
 
     private async Task FetchAds()
     {
