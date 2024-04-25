@@ -20,14 +20,15 @@
 
             @if (isLoggedIn)
             {
-                <button href="/myprofile" type="button" class="btn btn-warning">My Profile</button>
-                <button @onclick="Logout" type="button" class="btn btn-outline-light me-2">Logout</button>         
+                <a href="/myprofile" class="btn btn-warning">My Profile</a>
+                <button @onclick="Logout" type="button" class="btn btn-outline-light me-2">Logout</button>
             }
             else
             {
-                <button href="/login/" type="button" class="btn btn-outline-light me-2">Login</button>
-                <button href="/login/" type="button" class="btn btn-warning">Sign-up</button>
+                <a href="/login/" class="btn btn-outline-light me-2">Login</a>
+                <a href="/register/" class="btn btn-warning">Sign-up</a>
             }
+
 
             <div class="text-end">
             </div>

@@ -44,7 +44,7 @@ namespace ServerAPI.Repositories
         }
 
 
-        public void AddItem(Ad ad)
+        public void AddAd(Ad ad)
         {
             var max = 0;
             if (collection.Count(Builders<Ad>.Filter.Empty) > 0)
@@ -78,7 +78,7 @@ namespace ServerAPI.Repositories
             collection.UpdateOne(x => x.Id == ad.Id, updateDef);
         }
 
-        public void UpdateItem(Ad ad)
+        public void UpdateAd(Ad ad)
 
         {
             var updateDef = Builders<Ad>.Update

@@ -6,7 +6,7 @@ namespace ServerAPI.Repositories
     {
 
         //Tildeler item en unik id og tilføjer den.
-        void AddItem(Ad ad);
+        void AddAd(Ad ad);
 
 
         void DeleteById(int id);
@@ -16,6 +16,6 @@ namespace ServerAPI.Repositories
         void PurchaseAd (Ad ad);
 
         // Opdaterer element med Id = item.Id.
-        void UpdateItem(Ad ad);
+        void UpdateAd(Ad ad);
     }
 }
