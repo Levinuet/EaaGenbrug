@@ -7,17 +7,17 @@
 <h1 class="mb-3">Tilgængelige Annoncer</h1>
 
 <div class="ads-container">
-    @if (eaagenbrug == null)
+    @if (activeAds == null)
     {
             <p class="loading"><em>Loading...</em></p>
     }
-    else if (eaagenbrug.Length == 0)
+    else if (activeAds.Length == 0)
     {
             <p class="no-ads"><em>No ads available.</em></p>
     }
     else
     {
-        @foreach (var ad in eaagenbrug)
+        @foreach (var ad in activeAds)
         {
                     <div class="card">
                         <h5 class="card-title">@ad.Title</h5>
@@ -41,10 +41,19 @@
     private string serverUrl = "https://localhost:7189";
     private string username = "Default User"; // Default username
     private bool isLoggedIn = false; // Login status
+    private string ads = "No ads listed.";
 
+
+    private Ad[]? activeAds = new Ad[0];
+   
+
+
+    private string busyDisplayStyle = "none";
+ 
     protected override async Task OnInitializedAsync()
     {
         await FetchUserDetails();
+        await FetchAds();
     }
 
     private async Task FetchUserDetails()
@@ -66,7 +75,8 @@
     {
         try
         {
-            eaagenbrug = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
+            var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
+            activeAds = allAds?.Where(ad => ad.Status != "Sold").ToArray() ?? new Ad[0];
         }
         catch (Exception ex)
         {

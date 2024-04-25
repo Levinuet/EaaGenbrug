@@ -51,6 +51,13 @@ namespace HelloBlazor.Server.Controllers
             return Ok();
 
         }
+        [HttpPost("approve")]
+        public async Task<IActionResult> ApproveAd([FromBody] Ad ad)
+        {
+            mRepo.ApproveAd(ad);
+            return Ok();
+
+        }
 
         
         
