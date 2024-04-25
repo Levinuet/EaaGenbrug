@@ -11,9 +11,7 @@ using static ServerAPI1.Program;
 public class UserController : ControllerBase
 {
     private readonly IMongoDatabase _database;
-
     public IMongoCollection<User> Users => _database.GetCollection<User>("Users");
-
 
     private readonly IUserRepository _userRepository;
 
@@ -55,8 +53,6 @@ public class UserController : ControllerBase
 
         await _userRepository.CreateUser(user);
         return Ok("User registered successfully");
-
-
     }
 
     [HttpPost]
