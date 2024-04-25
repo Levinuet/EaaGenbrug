@@ -7,29 +7,29 @@
 <h1 class="mb-3">Tilgængelige Annoncer</h1>
 
 <div class="ads-container">
-    @if (shoppingList == null)
+    @if (eaagenbrug == null)
     {
             <p class="loading"><em>Loading...</em></p>
     }
-    else if (shoppingList.Length == 0)
+    else if (eaagenbrug.Length == 0)
     {
             <p class="no-ads"><em>No ads available.</em></p>
     }
     else
     {
-        @foreach (var item in shoppingList)
+        @foreach (var ad in eaagenbrug)
         {
                     <div class="card">
-                        <h5 class="card-title">@item.Title</h5>
-                        <img class="card-img" src="@item.ImageUrl" alt="Item Image">
+                        <h5 class="card-title">@ad.Title</h5>
+                        <img class="card-img" src="@ad.ImageUrl" alt="Item Image">
                         <div class="card-info">
-                            <p>Price: @item.Price.ToString("C")</p>
-                            <p>Location: @item.Location</p>
-                            <p>Category: @item.Category</p>
-                            <p>Status: @item.Status</p>
-                            <p>Description: @item.Description</p>
-                            <p>Seller: @item.SellerUserName</p>
-                            <button class="btn btn-primary" @onclick="() => PurchaseItem(item)">Buy Now</button>
+                            <p>Price: @ad.Price.ToString("C")</p>
+                            <p>Location: @ad.Location</p>
+                            <p>Category: @ad.Category</p>
+                            <p>Status: @ad.Status</p>
+                            <p>Description: @ad.Description</p>
+                            <p>Seller: @ad.SellerUserName</p>
+                            <button class="btn btn-primary" @onclick="() => PurchaseItem(ad)">Buy Now</button>
                         </div>
                     </div>
         }
@@ -37,10 +37,10 @@
 </div>
 
 @code {
-    private Ad[]? shoppingList;
+    private Ad[]? eaagenbrug;
     private string serverUrl = "https://localhost:7189";
-    private string username = "Default User";  // Default username
-    private bool isLoggedIn = false;  // Login status
+    private string username = "Default User"; // Default username
+    private bool isLoggedIn = false; // Login status
 
     protected override async Task OnInitializedAsync()
     {
@@ -70,22 +70,24 @@
     {
         try
         {
-            shoppingList = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/shopping/getall");
+            eaagenbrug = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
         }
         catch (Exception ex)
         {
             Console.Error.WriteLine($"Failed to load ads: {ex.Message}");
-            shoppingList = Array.Empty<Ad>();
+            eaagenbrug = Array.Empty<Ad>();
         }
     }
 
-    private async Task PurchaseItem(Ad item)
+    private async Task PurchaseItem(Ad ad)
     {
-        item.BuyerUserName = isLoggedIn ? username : "Guest";  // Set BuyerUserName based on login status
+        ad.BuyerUserName = isLoggedIn ? username : "Guest"; // Set BuyerUserName based on login status
 
-        var response = await Http.PostAsJsonAsync<Ad>($"{serverUrl}/api/shopping/purchase", item);
-        Console.WriteLine("Client: purchase " + item.Title + " by " + item.BuyerUserName);
+        var response = await Http.PostAsJsonAsync<Ad>($"{serverUrl}/api/eaagenbrug/purchase", ad);
+        Console.WriteLine("Client: purchase " + ad.Title + " by " + ad.BuyerUserName);
 
-        await FetchAds();  // Refresh the ads list after purchase
+        await FetchAds(); // Refresh the ads list after purchase
     }
+
 }
+    

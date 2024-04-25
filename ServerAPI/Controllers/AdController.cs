@@ -5,7 +5,7 @@ using ServerAPI.Repositories;
 namespace HelloBlazor.Server.Controllers
 {
     [ApiController]
-    [Route("api/shopping")]
+    [Route("api/eaagenbrug")]
     public class ShoppingController : ControllerBase
     {
         private IAdRepository mRepo;
