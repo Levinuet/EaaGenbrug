@@ -8,69 +8,49 @@
 
 @if (isLoggedIn)
 {
-<p>Velkommen til din side, @username! Her kan du se dine aktive annoncer og dine tidligere køb samt svare på købsanmodninger</p>
+<div class="welcome-message">
+    <p>Velkommen til din side, @username! Her kan du se dine aktive annoncer og dine tidligere køb samt svare på købsanmodninger.</p>
+    <button class="btn btn-primary" @onclick="CreateAd">Opret annonce</button>
+    <button class="btn btn-primary" @onclick="Purchasedads">Se tidligere køb</button>
+</div>
 
-<button class="btn btn-primary" @onclick="CreateAd">Opret annonce</button>
-
-
-<h2>Mine Annoncer</h2>
-<table class="table table-striped">
-    <thead>
-    <tr>
-        <th>Title</th>
-        <th>Price</th>
-        <th>Location</th>
-        <th>Category</th>
-        <th>Image</th>
-        <th>Status</th>
-        <td>Approve purchase</td>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var ad in activeAds)
-    {
-    <tr>
-        <td>@ad.Title</td>
-        <td>@ad.Price</td>
-        <td>@ad.Location</td>
-        <td>@ad.Category</td>
-        <td><img src="@ad.ImageUrl" alt="Item Image" style="height:50px;" /></td>
-        <td>@ad.Status</td>
+<div class="ads-section">
+    <h2>Mine Annoncer</h2>
+        @foreach (var ad in activeAds)
+        {
+            <div class="card">
+            <div class="card-body">
+            <h5 class="card-title">@ad.Title</h5>
+            <img class="card-img" src="@ad.ImageUrl" alt="Item Image" style="height: 100px;">
+            <p class="card-text">Price: @ad.Price.ToString("C")</p>
+            <p class="card-text">Location: @ad.Location</p>
+            <p class="card-text">Category: @ad.Category</p>
+            <p class="card-status-r">@ad.Status</p>
         @if (ad.Status == "Reserved")
         {
         <button class="btn btn-success sold-btn" @onclick="() => ApprovePurchase(ad)">Mark as Sold</button>
         }
-    </tr>
-    }
-    </tbody>
-</table>
+            </div>
+            </div>
+        }
+</div>
 
-<h2>Solgte produkter</h2>
-<table class="table table-striped">
-    <thead>
-    <tr>
-        <th>Title</th>
-        <th>Price</th>
-        <th>Location</th>
-        <th>Category</th>
-        <th>Image</th>
-        <th>Status</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var ad in soldAds)
-    {
-    <tr>
-        <td>@ad.Title</td>
-        <td>@ad.Price</td>
-        <td>@ad.Location</td>
-        <td>@ad.Category</td>
-        <td><img src="@ad.ImageUrl" alt="Item Image" style="height:50px;" /></td>
-        <td>@ad.Status</td>
-    </tr>
-    }
-    </tbody>
-</table>
+    <div class="sold-products">
+        <h2>Solgte produkter</h2>
+        @foreach (var ad in soldAds)
+        {
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">@ad.Title</h5>
+                    <img class="card-img" src="@ad.ImageUrl" alt="Item Image" style="height: 100px;">
+                    <p class="card-text">Price: @ad.Price.ToString("C")</p>
+                    <p class="card-text">Location: @ad.Location</p>
+                    <p class="card-text">Category: @ad.Category</p>
+                    <p class="card-status-s">@ad.Status</p>
+                </div>
+            </div>
+        }
+    </div>
 }
 else
 {
@@ -122,6 +102,13 @@ private void CreateAd()
 {
 NavigationManager.NavigateTo("/create");
 }
+
+private void Purchasedads()
+{
+NavigationManager.NavigateTo("/purchasedads");
+}
+
+
 private async Task ApprovePurchase(Ad ad)
 {
     ad.BuyerUserName = isLoggedIn ? username : "Guest"; // Set BuyerUserName based on login status
