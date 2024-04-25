@@ -23,6 +23,7 @@
     }
     else
     {
+
         foreach (var ad in DisplayedAds)
         {
             <div class="card">
@@ -35,12 +36,16 @@
                     <p>Status: @ad.Status</p>
                     <p>Description: @ad.Description</p>
                     <p>Seller: @ad.SellerUserName</p>
-                    <button class="btn btn-primary" @onclick="() => PurchaseItem(ad)">Buy Now</button>
+                    @if (isLoggedIn)
+                    {
+                                    <button class="btn btn-primary" @onclick="() => PurchaseItem(ad)">Buy Now</button>
+                    }
                 </div>
             </div>
         }
     }
 </div>
+
 
 @code {
     private string serverUrl = "https://localhost:7189";
@@ -50,10 +55,14 @@
     private List<Ad> DisplayedAds = new List<Ad>();
     private bool firstRender = true;
 
+
     protected override void OnInitialized()
     {
         // Execute non-JavaScript operations here
     }
+
+    private Ad[]? activeAds = new Ad[0];
+
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -66,7 +75,13 @@
         }
     }
 
+
     private void FilterAds(ChangeEventArgs e)
+
+    private string busyDisplayStyle = "none";
+
+    protected override async Task OnInitializedAsync()
+
     {
         string selectedCategory = e?.Value?.ToString() ?? "";
         UpdateDisplayedAds(selectedCategory);
@@ -82,7 +97,24 @@
         {
             DisplayedAds = AllAds.Where(ad => ad.Category.Equals(category)).ToList();
         }
-    }
+
+    private async Task FetchUserDetails()
+   {
+       try
+       {
+           isLoggedIn = await LocalStorage.GetItemAsync<bool>("isLoggedIn");
+
+               if (isLoggedIn)
+               {
+                   username = await LocalStorage.GetItemAsync<string>("username") ?? "Default User";
+               }
+       }
+           catch (Exception ex)
+           {
+               // Handle exception if needed
+               Console.WriteLine($"Error fetching user details: {ex.Message}");
+           }
+   }
 
     private async Task FetchAds()
     {
@@ -106,6 +138,11 @@
             AllAds.Clear();
         }
     }
+
+    private async Task PurchaseItem(Ad ad)
+    {
+
+        ad.BuyerUserName = isLoggedIn ? username : "Guest"; // Set BuyerUserName based on login status
 
 
     public async Task PurchaseItem(Ad ad)
