@@ -54,6 +54,26 @@ else
 {
 <p>You're not logged in <a href="/login">Click here to login</a>.</p>
 }
+
+@if (purchasedAds != null && purchasedAds.Any())
+{
+<div class="purchased-products">
+    <h2>My purchases</h2>
+    @foreach (var ad in purchasedAds)
+    {
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">@ad.Title</h5>
+            <img class="card-img" src="@ad.ImageUrl" alt="@ad.Title Image" style="height: 100px;">
+            <p class="card-text">Price: @ad.Price.ToString("C")</p>
+            <p class="card-text">Location: @ad.Location</p>
+            <p class="card-text">Category: @ad.Category</p>
+            <p class="card-status">@ad.Status</p>
+        </div>
+    </div>
+    }
+</div>
+}
 <img src="busy.gif" style="display:@busyDisplayStyle" />
     
     <!--PopUp window for editing an Ad -->
@@ -88,6 +108,7 @@ else
     private string username = "Default User";
     private Ad[]? activeAds = new Ad[0];
     private Ad[]? soldAds = new Ad[0];
+    private Ad[]? purchasedAds = new Ad[0];
     private string busyDisplayStyle = "none";
     private string serverUrl = "https://localhost:7189";
     private Ad? editingAd; // Tracks the ad currently being edited
@@ -111,6 +132,7 @@ else
             var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
             activeAds = allAds?.Where(ad => ad.SellerUserName == username && ad.Status != "Sold").ToArray() ?? new Ad[0];
             soldAds = allAds?.Where(ad => ad.SellerUserName == username && ad.Status == "Sold").ToArray() ?? new Ad[0];
+            purchasedAds = allAds?.Where(ad => ad.BuyerUserName == username && ad.Status == "Sold").ToArray() ?? new Ad[0];
             busyDisplayStyle = "none"; // Hide busy indicator
         }     
         else
