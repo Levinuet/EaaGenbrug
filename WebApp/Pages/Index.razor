@@ -78,8 +78,6 @@
             }
     }
 
-
-
     private async Task FetchAds()
     {
         try
@@ -96,6 +94,7 @@
 
     private async Task PurchaseItem(Ad ad)
     {
+
         ad.BuyerUserName = isLoggedIn ? username : "Guest"; // Set BuyerUserName based on login status
 
         var response = await Http.PostAsJsonAsync<Ad>($"{serverUrl}/api/eaagenbrug/purchase", ad);
