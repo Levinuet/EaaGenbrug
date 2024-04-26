@@ -30,11 +30,13 @@
 
     protected override void OnInitialized()
     {
+        // Creates an HttpClient instance named "http" for making HTTP requests.
         http = HttpClientFactory.CreateClient("MyClient");
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        // Checks login status on initial render. If logged in, redirects to the profile page.
         if (firstRender)
         {
             var loggedIn = await LocalStorage.GetItemAsync<bool>("isLoggedIn");
@@ -47,6 +49,8 @@
 
     private async Task HandleLogin()
     {
+        // Sends login request to the server and handles the response.
+        // Stores login state and username on successful login and redirects to profile page.
         var response = await http.PostAsJsonAsync("https://localhost:7189/user/login", loginModel);
         if (response.IsSuccessStatusCode)
         {
@@ -57,12 +61,14 @@
         else
         {
             errorMessage = await response.Content.ReadAsStringAsync();
-            StateHasChanged();
+            StateHasChanged(); // Signal UI to update with any potential error message
         }
     }
 
     private void ToggleForm()
     {
+        // Switches between registration and login form.
         isRegistering = !isRegistering;
     }
 }
+

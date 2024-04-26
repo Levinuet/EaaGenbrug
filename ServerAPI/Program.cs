@@ -1,33 +1,40 @@
 using MongoDB.Driver;
 using ServerAPI.Repositories;
 
-
 namespace ServerAPI1
 {
     public class Program
     {
+        // Main entry point for the application
         public static void Main(string[] args)
         {
+            // Creates and configures a new web application builder
             var builder = WebApplication.CreateBuilder(args);
 
-           builder.Services.AddHttpClient("MyClient", client =>
+            // Configures an HTTP client named 'MyClient' with a specific base address
+            builder.Services.AddHttpClient("MyClient", client =>
             {
                 client.BaseAddress = new Uri("https://localhost:7052/");
             });
 
-
-            // Add services to the container.
+            // Registers a singleton MongoDbContext configured from application settings
             builder.Services.AddSingleton(sp => new MongoDbContext(
                 builder.Configuration["MongoDB:ConnectionString"],
                 builder.Configuration["MongoDB:DatabaseName"]
             ));
+
+            // Dependency injection for repository classes
             builder.Services.AddSingleton<IAdRepository, AdRepositoryMongoDB>();
-            builder.Services.AddScoped<IUserRepository, UserRepository>(); 
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+            // Adds support for Razor Pages and Server-Side Blazor
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
 
+            // Adds MVC Controllers to the application
             builder.Services.AddControllers();
 
+            // Configures CORS to allow any origin, method, and header
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("policy",
@@ -38,15 +45,19 @@ namespace ServerAPI1
                                       policy.AllowAnyHeader();
                                   });
             });
+
+            // Builds the web application
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            // Configures middleware for authorization
             app.UseAuthorization();
+
+            // Maps controller routes and Blazor hub connections
             app.MapControllers();
             app.MapBlazorHub();
 
+            // Runs the web application
             app.Run();
-
         }
 
         public class MongoDbContext

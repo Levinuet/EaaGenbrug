@@ -4,6 +4,14 @@
 @inject HttpClient Http
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
+<div class="notification">
+    @if (!string.IsNullOrEmpty(purchaseNotificationMessage))
+    {
+        <div class="alert alert-success">
+            @purchaseNotificationMessage
+        </div>
+    }
+</div>
 <div class="col-md-6 mb-3">
     <label for="FilterCategory">Filter by Category</label>
     <select @onchange="FilterAds" class="form-control">
@@ -13,6 +21,7 @@
         <option value="Tøj">Tøj</option>
     </select>
 </div>
+
 
 <div class="ads-container">
     @if (DisplayedAds == null || !DisplayedAds.Any())
@@ -39,6 +48,7 @@
                     }
                 </div>
             </div>
+            
         }
     }
 </div>
@@ -52,25 +62,30 @@
     private Ad[]? activeAds = new Ad[0];
     private List<Ad> AllAds = new List<Ad>();
     private List<Ad> DisplayedAds = new List<Ad>();
+    private string purchaseNotificationMessage = "";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        // Check if this is the first rendering of the component
         if (firstRender)
         {
             isLoggedIn = await LocalStorage.GetItemAsync<bool>("isLoggedIn");
             await FetchAds();
             this.firstRender = false;
-            StateHasChanged();  // Re-render the page to show updated UI after fetching local storage and ads
+            StateHasChanged(); // Trigger a re-render of the component
         }
     }
 
-    private void FilterAds(ChangeEventArgs e) 
-    { 
-        string selectedCategory = e?.Value?.ToString() ?? ""; UpdateDisplayedAds(selectedCategory); 
+    private void FilterAds(ChangeEventArgs e)
+    {
+        // Retrieve the selected category and update the displayed ads based on the category
+        string selectedCategory = e?.Value?.ToString() ?? "";
+        UpdateDisplayedAds(selectedCategory);
     }
 
     private void UpdateDisplayedAds(string category)
     {
+        // Display all ads or filter ads based on the selected category
         if (string.IsNullOrEmpty(category))
         {
             DisplayedAds = AllAds;
@@ -83,6 +98,7 @@
 
     private async Task FetchUserDetails()
     {
+        // Fetch user login status and username from local storage
         try
         {
             isLoggedIn = await LocalStorage.GetItemAsync<bool>("isLoggedIn");
@@ -93,25 +109,24 @@
         }
         catch (Exception ex)
         {
-            // Handle exception if needed
             Console.WriteLine($"Error fetching user details: {ex.Message}");
         }
     }
 
     private async Task FetchAds()
     {
+        // Fetches all ads from the server and populates the AllAds list with filtered results (excluding "Sold" ads).
         try
         {
             var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
             if (allAds != null)
             {
-                // Filter out ads with status "Sold" immediately after fetching
                 AllAds = allAds.Where(ad => ad.Status != "Sold").ToList();
-                UpdateDisplayedAds("");  // Initialize DisplayedAds with filtered ads
+                UpdateDisplayedAds("");
             }
             else
             {
-                AllAds.Clear();  // Ensure list is empty if no data is fetched
+                AllAds.Clear();
             }
         }
         catch (Exception ex)
@@ -121,11 +136,25 @@
         }
     }
 
+
+
     public async Task PurchaseItem(Ad ad)
     {
+        // Updates the ad with buyer information and sends a purchase request to the server. Refreshes the ad list after purchase.
         ad.BuyerUserName = isLoggedIn ? username : "Guest";
         var response = await Http.PostAsJsonAsync($"{serverUrl}/api/eaagenbrug/purchase", ad);
         Console.WriteLine("Client: purchase " + ad.Title + " by " + ad.BuyerUserName);
+
+        // Set notification message
+        purchaseNotificationMessage = "The purchase request has been sent to the seller. You will be notified when the seller confirms the purchase.";
+        StateHasChanged(); // Trigger UI update
+
+        // Clear the message after 5 seconds
+        await Task.Delay(5000);
+        purchaseNotificationMessage = "";
+        StateHasChanged(); // Update UI again to clear the message
+
         await FetchAds();  // Refresh the ads list after a purchase
     }
+
 }
