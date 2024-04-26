@@ -12,7 +12,6 @@
     <div class="welcome-message">
         <p>Welcome to your Profile Page, @username! Here you can see your Active, Reserved and Sold Ads - Aswell as your purchased Ads.</p>
         <button class="btn btn-primary" @onclick="CreateAd">Create Ad</button>
-        <button class="btn btn-primary" @onclick="Purchasedads">Se tidligere køb</button>
     </div>
     @if (activeAds != null && activeAds.Any())
     {
@@ -27,6 +26,7 @@
                     <p class="card-text">Location: @ad.Location</p>
                     <p class="card-text">Category: @ad.Category</p>
                     <p class="@(ad.Status == "Reserved" ? "card-status-r" : "")">@ad.Status</p>
+                    <button class="btn btn-success edit-btn" style="background-color: #c2b90e" @onclick="() => EditAd(ad)">Edit ad</button>
                     @if (ad.Status == "Reserved")
                     {
                         <button class="btn btn-success sold-btn" @onclick="() => ApprovePurchase(ad)">Mark as Sold</button>
@@ -80,32 +80,50 @@ else
 {
 <p>You're not logged in <a href="/login">Click here to login</a>.</p>
 }
-    
-    <!--PopUp window for editing an Ad -->
-    @if (editingAd != null)
-    {
-        <div class="modal" tabindex="-1" style="display:block">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Edit Ad</h5>
-                        <button type="button" class="close" @onclick="CancelEdit">&times;</button>
+
+<!--PopUp window for editing an Ad -->
+@if (editingAd != null)
+{
+    <div class="modal" tabindex="-1" style="display:block">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Ad</h5>
+                    <button type="button" class="close" @onclick="CancelEdit">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" @bind="editingAd.Title" class="form-control mb-2" id="title" placeholder="Title">
                     </div>
-                    <div class="modal-body">
-                        <input type="text" @bind="editingAd.Title" class="form-control mb-2" placeholder="Title">
-                        <input type="number" @bind="editingAd.Price" class="form-control mb-2" placeholder="Price">
-                        <input type="text" @bind="editingAd.Location" class="form-control mb-2" placeholder="Location">
-                        <input type="text" @bind="editingAd.Category" class="form-control mb-2" placeholder="Category">
-                        <input type="text" @bind="editingAd.ImageUrl" class="form-control mb-2" placeholder="Image URL">
-                        <input type="text" @bind="editingAd.Status" class="form-control mb-2" placeholder="Status">
+                    <div class="form-group">
+                        <label for="price">Price</label>
+                        <input type="number" @bind="editingAd.Price" class="form-control mb-2" id="price" placeholder="Price">
                     </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-primary" @onclick="() => SaveAd(editingAd)">Save</button>
-                        <button class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" @bind="editingAd.Location" class="form-control mb-2" id="location" placeholder="Location">
                     </div>
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <input type="text" @bind="editingAd.Category" class="form-control mb-2" id="category" placeholder="Category">
+                    </div>
+                    <div class="form-group">
+                        <label for="imageUrl">Image URL</label>
+                        <input type="text" @bind="editingAd.ImageUrl" class="form-control mb-2" id="imageUrl" placeholder="Image URL">
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <input type="text" @bind="editingAd.Status" class="form-control mb-2" id="status" placeholder="Status">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" @onclick="() => SaveAd(editingAd)">Save</button>
+                    <button class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
                 </div>
             </div>
         </div>
+    </div>
     }
 
 @code {

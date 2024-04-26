@@ -15,6 +15,16 @@
     transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out; /* Smooth transition for hover effects */
 }
 
+.btn btn-success edit-btn {
+    background-color: #def511;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px;
+}
+
 .card:hover {
     transform: translateY(-5px); /* Moves the card up slightly */
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Enhances the shadow making it more prominent */
