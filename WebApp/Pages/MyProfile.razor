@@ -8,6 +8,7 @@
 
 @if (isLoggedIn)
 {
+
     <div class="welcome-message">
         <p>Welcome to your Profile Page, @username! Here you can see your Active, Reserved and Sold Ads - Aswell as your purchased Ads.</p>
         <button class="btn btn-primary" @onclick="CreateAd">Create Ad</button>
@@ -17,7 +18,6 @@
     {
         <h2>My Ads</h2>
         <div class="ads-container">
-
             @foreach (var ad in activeAds)
             {
                 <div class="card">
@@ -120,6 +120,7 @@ else
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        // Loads profile data (login state, username, active and sold ads) on initial render and updates UI.
         if (firstRender)
         {
             await LoadProfileData();
@@ -129,11 +130,14 @@ else
 
     private async Task LoadProfileData()
     {
+        // Retrieves login status and username from LocalStorage.
+        // Fetches all ads and filters them into active and sold lists based on user and status.
+        // Updates UI elements with retrieved data (username, busy indicator, ad lists).
         isLoggedIn = await LocalStorage.GetItemAsync<bool>("isLoggedIn");
         if (isLoggedIn)
         {
             username = await LocalStorage.GetItemAsync<string>("username") ?? "Default User";
-            busyDisplayStyle = "block"; // Show busy indicator
+            busyDisplayStyle = "block"; // Show busy indicator while fetching data
             var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
             activeAds = allAds?.Where(ad => ad.SellerUserName == username && ad.Status != "Sold").ToArray() ?? new Ad[0];
             soldAds = allAds?.Where(ad => ad.SellerUserName == username && ad.Status == "Sold").ToArray() ?? new Ad[0];
@@ -142,45 +146,46 @@ else
         }     
         else
         {
-          activeAds = new Ad[0];
-          soldAds = new Ad[0];
+            activeAds = new Ad[0];
+            soldAds = new Ad[0];
         }
     }
-          
+
     private void CreateAd()
     {
+        // Navigates the user to the "/create" page to create a new ad.
         NavigationManager.NavigateTo("/create");
     }
 
-    private void Purchasedads()
+    private async Task ApprovePurchase(Ad ad)
     {
-        NavigationManager.NavigateTo("/purchasedads");
-    }
-              
-     private async Task ApprovePurchase(Ad ad)
-     {
-        ad.BuyerUserName = isLoggedIn ? username : "Guest"; // Set BuyerUserName based on login status
-
+        // Updates the ad's buyer information based on login status and sends an approval request to the server.
+        // Refetches all ads and updates the active and sold ad lists based on user and status.
+        ad.BuyerUserName = isLoggedIn ? username : "Guest";
         var response = await Http.PostAsJsonAsync<Ad>($"{serverUrl}/api/eaagenbrug/approve", ad);
         var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
         activeAds = allAds?.Where(ad => ad.SellerUserName == username && ad.Status != "Sold").ToArray() ?? new Ad[0];
         soldAds = allAds?.Where(ad => ad.SellerUserName == username && ad.Status == "Sold").ToArray() ?? new Ad[0];
-     }
+    }
 
     private void EditAd(Ad ad)
     {
-        editingAd = ad; // Open the modal with the ad details
+        // Opens a modal window (editingAd) for editing the selected ad.
+        editingAd = ad;
     }
 
     private async Task SaveAd(Ad ad)
     {
+        // Attempts to update the ad on the server.
+        // Handles success and failure scenarios, including closing the modal and updating UI on success.
+        // Logs errors to the console and provides an option to display them to the user.
         try
         {
             var response = await Http.PutAsJsonAsync($"{serverUrl}/api/eaagenbrug/update", ad);
             if (response.IsSuccessStatusCode)
             {
-                editingAd = null; // Attempt to close the modal
-                StateHasChanged(); // Ensure UI updates
+                editingAd = null; // Close the modal on successful update
+                StateHasChanged(); // Update UI to reflect changes
             }
             else
             {
@@ -196,6 +201,7 @@ else
 
     private void CancelEdit()
     {
-        editingAd = null; // Close the modal
+        // Closes the ad editing modal window.
+        editingAd = null;
     }
-}
+    }

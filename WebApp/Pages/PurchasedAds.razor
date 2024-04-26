@@ -35,10 +35,11 @@ else
     private string serverUrl = "https://localhost:7189";
     private string username = "Default User";
     private string busyDisplayStyle = "none";
-    private bool isLoggedIn = false; // Login status
+    private bool isLoggedIn = false; 
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        // Loads profile data and fetches all ads on initial render and updates UI.
         if (firstRender)
         {
             await LoadProfileData();
@@ -49,21 +50,26 @@ else
 
     private async Task LoadProfileData()
     {
+        // Retrieves login status from LocalStorage.
+        // Shows a busy indicator only if the user is logged in (assuming data retrieval).
         isLoggedIn = await LocalStorage.GetItemAsync<bool>("isLoggedIn");
         if (isLoggedIn)
         {
             username = await LocalStorage.GetItemAsync<string>("username") ?? "Default User";
-            busyDisplayStyle = "block";
+            busyDisplayStyle = "block"; // Show busy indicator (optional based on implementation)
         }
     }
 
     private async Task FetchAds()
     {
+        // Fetches all ads and filters them into the purchasedAds list based on user and "Sold" status.
+        // Handles success and failure scenarios, including clearing the purchasedAds list on error.
+        // Hides the busy indicator after data is fetched (optional based on implementation).
         try
         {
             var allAds = await Http.GetFromJsonAsync<Ad[]>($"{serverUrl}/api/eaagenbrug/getall");
             purchasedAds = allAds?.Where(ad => ad.BuyerUserName == username && ad.Status == "Sold").ToArray() ?? new Ad[0];
-            busyDisplayStyle = "none";
+            busyDisplayStyle = "none"; // Hide busy indicator (optional based on implementation)
         }
         catch (Exception ex)
         {
@@ -71,9 +77,10 @@ else
             purchasedAds = Array.Empty<Ad>();
         }
     }
-    
+
     private void BackToMyProfile()
     {
+        // Navigates the user back to the "/myprofile" page.
         NavigationManager.NavigateTo("/myprofile");
     }
 }

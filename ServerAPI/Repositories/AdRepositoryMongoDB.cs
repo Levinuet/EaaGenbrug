@@ -12,9 +12,9 @@ namespace ServerAPI.Repositories
 
         public AdRepositoryMongoDB()
         {
+            // Initializes the MongoDB client connection with authentication and targets our database and collection.
             var password = "XdWOg0DZEhGTpzuX";
             var mongoUri = $"mongodb+srv://eaa23rao:{password}@shopping.dujfobz.mongodb.net/?retryWrites=true&w=majority";
-            
             try
             {
                 client = new MongoClient(mongoUri);
@@ -30,18 +30,15 @@ namespace ServerAPI.Repositories
                 return;
             }
 
-            // Provide the name of the database and collection you want to use.
-            // If they don't already exist, the driver and Atlas will create them
-            // automatically when you first write data.
             var dbName = "Eaagenbrug";
             var collectionName = "Ads";
-
             collection = client.GetDatabase(dbName)
                .GetCollection<Ad>(collectionName);
         }
-        
+
         public void AddAd(Ad ad)
         {
+            // Adds a new ad to the collection with an auto-incremented ID.
             var max = 0;
             if (collection.Count(Builders<Ad>.Filter.Empty) > 0)
             {
@@ -49,22 +46,24 @@ namespace ServerAPI.Repositories
             }
             ad.Id = max + 1;
             collection.InsertOne(ad);
-
         }
 
         public void DeleteById(int id)
         {
+            // Deletes an ad by its ID.
             var deleteResult = collection
                 .DeleteOne(Builders<Ad>.Filter.Where(r => r.Id == id));
         }
 
         public Ad[] GetAll()
         {
+            // Retrieves all ads from the collection.
             return collection.Find(Builders<Ad>.Filter.Empty).ToList().ToArray();
         }
 
         public void PurchaseAd(Ad ad)
         {
+            // Marks an ad as reserved if it isn't already.
             if (ad.Status != "Reserved")
             {
                 var updateDef = Builders<Ad>.Update
@@ -74,19 +73,19 @@ namespace ServerAPI.Repositories
                 collection.UpdateOne(x => x.Id == ad.Id, updateDef);
             }
         }
+
         public void ApproveAd(Ad ad)
         {
-
+            // Changes the status of an ad to 'Sold'.
             var updateDef = Builders<Ad>.Update
                 .Set(x => x.Status, "Sold");
- 
-
 
             collection.UpdateOne(x => x.Id == ad.Id, updateDef);
         }
 
         public void UpdateAd(Ad ad)
         {
+            // Updates the specified fields of an existing ad.
             var updateDef = Builders<Ad>.Update
         .Set(x => x.Title, ad.Title)
         .Set(x => x.Price, ad.Price)
@@ -97,4 +96,5 @@ namespace ServerAPI.Repositories
             collection.UpdateOne(x => x.Id == ad.Id, updateDef);
         }
     }
+
 }
