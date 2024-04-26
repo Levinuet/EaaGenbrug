@@ -39,11 +39,15 @@
 
     protected override void OnInitialized()
     {
+        // Creates an HttpClient instance named "http" for making HTTP requests.
         http = HttpClientFactory.CreateClient("MyClient");
     }
 
     private async Task HandleRegister()
     {
+        // Prepares a RegisterDto object with user data and sends a registration request to the server.
+        // Handles success and failure scenarios, including storing login state, username, and redirecting to profile on success.
+        // Updates UI with any error message on failure.
         var registerDto = new RegisterDto { Username = user.Username, Password = user.Password, Email = user.Email };
         var response = await http.PostAsJsonAsync("https://localhost:7189/user/register", registerDto);
 
@@ -62,6 +66,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        // Checks login status on component initialization. Redirects to profile page if logged in.
         var loggedIn = await LocalStorage.GetItemAsync<bool>("isLoggedIn");
         if (loggedIn)
         {
