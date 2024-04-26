@@ -8,73 +8,78 @@
 
 @if (isLoggedIn)
 {
-<div class="welcome-message">
-    <p>Welcome to your Profile Page, @username! Here you can see your Active, Reserved and Sold Ads - Aswell as your purchased Ads.</p>
-    <button class="btn btn-primary" @onclick="CreateAd">Create Ad</button>
-    <button class="btn btn-primary" @onclick="Purchasedads">Se tidligere køb</button>
-</div>
-    <h2>My Ads</h2>
-<div class="ads-container">
-    
-        @foreach (var ad in activeAds)
-        {
-            <div class="card">
-            <h5 class="card-title">@ad.Title</h5>
-            <img class="card-img" src="@ad.ImageUrl" alt="Item Image" style="height: 100px;">
-            <p class="card-text">Price: @ad.Price.ToString("C")</p>
-            <p class="card-text">Location: @ad.Location</p>
-            <p class="card-text">Category: @ad.Category</p>
-            <p class="@(ad.Status == "Reserved" ? "card-status-r" : "")">@ad.Status</p>
-                @if (ad.Status == "Reserved")
-                    {
-                    <button class="btn btn-success sold-btn" @onclick="() => ApprovePurchase(ad)">Mark as Sold</button>
-                    }
-            </div>
-        }
-</div>
+    <div class="welcome-message">
+        <p>Welcome to your Profile Page, @username! Here you can see your Active, Reserved and Sold Ads - Aswell as your purchased Ads.</p>
+        <button class="btn btn-primary" @onclick="CreateAd">Create Ad</button>
+        <button class="btn btn-primary" @onclick="Purchasedads">Se tidligere køb</button>
+    </div>
+    @if (activeAds != null && activeAds.Any())
+    {
+        <h2>My Ads</h2>
+        <div class="ads-container">
 
-    <div class="sold-products">
-        <h2>Solgte produkter</h2>
-        @foreach (var ad in soldAds)
-        {
-            <div class="card">
-                <div class="card-body">
+            @foreach (var ad in activeAds)
+            {
+                <div class="card">
                     <h5 class="card-title">@ad.Title</h5>
                     <img class="card-img" src="@ad.ImageUrl" alt="Item Image" style="height: 100px;">
                     <p class="card-text">Price: @ad.Price.ToString("C")</p>
                     <p class="card-text">Location: @ad.Location</p>
                     <p class="card-text">Category: @ad.Category</p>
-                    <p class="card-status-s">@ad.Status</p>
+                    <p class="@(ad.Status == "Reserved" ? "card-status-r" : "")">@ad.Status</p>
+                    @if (ad.Status == "Reserved")
+                    {
+                        <button class="btn btn-success sold-btn" @onclick="() => ApprovePurchase(ad)">Mark as Sold</button>
+                    }
                 </div>
-            </div>
-        }
-    </div>
+            }
+        </div>
+    }
+
+    @if (soldAds != null && soldAds.Any())
+    {
+        <div class="sold-products">
+            <h2>Solgte produkter</h2>
+            @foreach (var ad in soldAds)
+            {
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">@ad.Title</h5>
+                        <img class="card-img" src="@ad.ImageUrl" alt="Item Image" style="height: 100px;">
+                        <p class="card-text">Price: @ad.Price.ToString("C")</p>
+                        <p class="card-text">Location: @ad.Location</p>
+                        <p class="card-text">Category: @ad.Category</p>
+                        <p class="card-status-s">@ad.Status</p>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    @if (purchasedAds != null && purchasedAds.Any())
+    {
+        <div class="purchased-products">
+            <h2>My purchases</h2>
+            @foreach (var ad in purchasedAds)
+            {
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">@ad.Title</h5>
+                        <img class="card-img" src="@ad.ImageUrl" alt="@ad.Title Image" style="height: 100px;">
+                        <p class="card-text">Price: @ad.Price.ToString("C")</p>
+                        <p class="card-text">Location: @ad.Location</p>
+                        <p class="card-text">Category: @ad.Category</p>
+                        <p class="card-status">@ad.Status</p>
+                    </div>
+                </div>
+            }
+        </div>
+    }
 }
 else
 {
 <p>You're not logged in <a href="/login">Click here to login</a>.</p>
 }
-
-@if (purchasedAds != null && purchasedAds.Any())
-{
-<div class="purchased-products">
-    <h2>My purchases</h2>
-    @foreach (var ad in purchasedAds)
-    {
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">@ad.Title</h5>
-            <img class="card-img" src="@ad.ImageUrl" alt="@ad.Title Image" style="height: 100px;">
-            <p class="card-text">Price: @ad.Price.ToString("C")</p>
-            <p class="card-text">Location: @ad.Location</p>
-            <p class="card-text">Category: @ad.Category</p>
-            <p class="card-status">@ad.Status</p>
-        </div>
-    </div>
-    }
-</div>
-}
-<img src="busy.gif" style="display:@busyDisplayStyle" />
     
     <!--PopUp window for editing an Ad -->
     @if (editingAd != null)
