@@ -16,9 +16,9 @@
     <label for="FilterCategory">Filter by Category</label>
     <select @onchange="FilterAds" class="form-control">
         <option value="">All Categories</option>
-        <option value="IT-Udstyr">IT-Udstyr</option>
-        <option value="Bøger">Bøger</option>
-        <option value="Tøj">Tøj</option>
+        <option value="Electronics">Electronics</option>
+        <option value="Books">Books</option>
+        <option value="Cloths">Cloths</option>
     </select>
 </div>
 
@@ -63,7 +63,6 @@
     private List<Ad> AllAds = new List<Ad>();
     private List<Ad> DisplayedAds = new List<Ad>();
     private string purchaseNotificationMessage = "";
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         // Check if this is the first rendering of the component
@@ -136,12 +135,11 @@
         }
     }
 
-
-
     public async Task PurchaseItem(Ad ad)
     {
         // Updates the ad with buyer information and sends a purchase request to the server. Refreshes the ad list after purchase.
-        ad.BuyerUserName = isLoggedIn ? username : "Guest";
+        username = await LocalStorage.GetItemAsync<string>("username") ?? "Default User";
+        ad.BuyerUserName = username;
         var response = await Http.PostAsJsonAsync($"{serverUrl}/api/eaagenbrug/purchase", ad);
         Console.WriteLine("Client: purchase " + ad.Title + " by " + ad.BuyerUserName);
 
@@ -153,8 +151,6 @@
         await Task.Delay(5000);
         purchaseNotificationMessage = "";
         StateHasChanged(); // Update UI again to clear the message
-
         await FetchAds();  // Refresh the ads list after a purchase
     }
-
 }
